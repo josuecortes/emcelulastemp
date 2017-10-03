@@ -62,6 +62,4 @@ gem "simple_calendar", "~> 2.0"
 gem 'rails-i18n'
 
 gem 'sprockets', '~> 3.0'
-
-
 gem "autoprefixer-rails"
