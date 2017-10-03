@@ -55,6 +55,7 @@ gem 'jquery-ui-rails'
 gem 'rails-jquery-autocomplete'
 
 gem 'geocoder'
+
 gem 'gmaps4rails'
 
 gem 'validates_timeliness', '~> 4.0'
