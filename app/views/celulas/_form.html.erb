@@ -1,0 +1,86 @@
+<%= simple_form_for @celula do |f| %>
+  
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :nome %>    
+    </div>
+    <div class="col-md-6">
+      <%= f.input :data_criacao, :input_html=>{:class=>'data', :value=>@celula.data_criacao.to_s_br} %>   
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :logradouro %>
+    </div>
+    <div class="col-md-6">
+      <%= f.input :numero %>  
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :bairro %>
+    </div>
+    <div class="col-md-6">
+      <%= f.input :cidade %>      
+    </div>
+  </div>
+    
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :estado %>
+    </div>
+    <div class="col-md-6">
+      <%= f.input :cep, :input_html=>{:class=>'cep'} %> 
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <%= f.input :dia, :collection => ["SEGUNDA", "TERCA", "QUARTA", "QUINTA", "SEXTA", "SABADO", "DOMINGO"], :input_html => {:class=>"input-medium", :required=>true} %>
+    </div>
+    <div class="col-md-4">
+      <%= f.input :hora, :collection => 00..23, :input_html => {:class=>"input-mini", :required => true} %>
+    </div>
+    <div class="col-md-4">
+      <%= f.input :minutos, :collection => ["00","10","15","20","30","40","45","50"], :input_html => {:class=>"input-mini", :required => true} %>
+    </div>
+  </div>
+  
+  <% if current_user.igreja_id != nil %>
+    <%= f.input :igreja_id, :as => :hidden, :input_html => {value: current_user.igreja.id} %>
+  <% else %>
+    <%= f.input :igreja_id, :label=>"Igreja", :collection=>Igreja.accessible_by(current_ability).order_by([:nome, :asc]).collect {|i| [i.nome, i.id]}, as: :select, :input_html => {:class=>"col-xs-2", :required=>true}  %>  
+  <% end %>
+
+  <% if current_user.supervisor_nao_master_nao_adm_nao_sec %>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="hidden">
+          <%= f.input :supervisores_da_celula_ids, :label=>"Supervisor da Celula", :collection=>Pessoa.where(:id=>current_user.pessoa_id).collect {|i| [i.nome, i.id]}, as: :check_boxes, :input_html=>{:checked => true} %>
+        </div>
+
+        <% if @celula.supervisores_da_celula_ids.blank? %>
+          <div class="alert alert-info" role="alert">
+            <a href="#" class="alert-link">Você será adicionado como supervisor desta celula!</a>
+          </div>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        
+      </div>
+    </div>
+       
+  <% end %>
+  
+  
+
+  <br/>
+
+  <div class="form-actions">
+    <%= f.button :submit, "Salvar", :class => 'btn btn-primary' %>
+    <%= link_to "Cancelar",
+                celulas_path, :class => 'btn btn-default' %>
+  </div>        
+<% end %>

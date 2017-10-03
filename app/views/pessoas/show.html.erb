@@ -1,0 +1,157 @@
+<%- model_class = Pessoa -%>
+<%= titulo_pagina("Detalhes da Pessoa","") %>
+
+<dl class="dl-horizontal">
+  <h4><%= @pessoa.nome %></h4>
+  <hr/>
+
+  <dt><strong><%= model_class.human_attribute_name(:sexo) %>:</strong></dt>
+  <dd><%= @pessoa.sexo %></dd>
+  <dt><strong>Data Nascimento:</strong></dt>
+  <dd><%= @pessoa.data_nascimento.to_s_br %></dd>
+
+  <h4>Estado Civil</h4>
+  <hr/>
+  
+  <dt><strong>Estado Civil:</strong></dt>
+  <dd><%= @pessoa.estado_civil %></dd>  
+  <% if @pessoa.estado_civil == "CASADO(A)" %>
+    <dt><strong>Data do Casamento:</strong></dt>
+    <dd><%= @pessoa.data_casamento.to_s_br %></dd>  
+  <% end %>
+
+
+  <h4>Contato</h4>
+  <hr/>
+
+  <dt><strong><%= model_class.human_attribute_name(:email) %>:</strong></dt>
+  <dd><%= @pessoa.email %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:celular) %>:</strong></dt>
+  <dd><%= @pessoa.celular %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:residencial) %>:</strong></dt>
+  <dd><%= @pessoa.residencial %></dd>
+
+  <h4>Endereço</h4>
+  <hr/>
+
+  <dt><strong><%= model_class.human_attribute_name(:logradouro) %>:</strong></dt>
+  <dd><%= @pessoa.logradouro %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:numero) %>:</strong></dt>
+  <dd><%= @pessoa.numero %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:bairro) %>:</strong></dt>
+  <dd><%= @pessoa.bairro %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:cidade) %>:</strong></dt>
+  <dd><%= @pessoa.cidade %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:estado) %>:</strong></dt>
+  <dd><%= @pessoa.estado %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:cep) %>:</strong></dt>
+  <dd><%= @pessoa.cep %></dd>
+    
+  <h4>Igreja</h4>
+  <hr/>
+
+  <dt><strong>Igreja:</strong></dt>
+  <dd><%= detalhes2(@pessoa.igreja, :nome) %></dd>
+  
+  <h4>Celula</h4>
+  <hr/>
+
+  <% if @pessoa.celulas_que_e_cordenador != [] %>
+    <dt><strong>Cordenador:</strong></dt>
+    <% @pessoa.celulas_que_e_cordenador.each do |c| %>
+      <dd><%= c.nome %></dd>
+    <% end %>
+    <br/>
+  <% end %>
+
+
+  <% if @pessoa.celulas_que_e_supervisor != [] %>
+    <dt><strong>Supervisor:</strong></dt>
+    <% @pessoa.celulas_que_e_supervisor.each do |c| %>
+      <dd><%= c.nome %></dd>
+    <% end %>
+    <br/>
+  <% end %>
+
+  <% if @pessoa.celulas_que_e_lider != [] %>
+    <dt><strong>Lider:</strong></dt>
+    <% @pessoa.celulas_que_e_lider.each do |c| %>
+      <% freq = EncontroSemanal.where(:celula_id=>c.id, :membro_ids.in=>([@pessoa.id])).count %>
+      <% falt = EncontroSemanal.where(:celula_id=>c.id, :faltoso_ids.in=>([@pessoa.id])).count %>
+      <% if freq > 0 %>
+        <% ult = EncontroSemanal.where(:celula_id=>c.id, :membro_ids.in=>([@pessoa.id])).last %>
+        <% data = ult.data.to_s_br %>
+      <% else %>
+        <% data = "" %>
+      <% end %>
+      <dd><%= c.nome %> &nbsp; <strong>Frequencia: </strong> <%= freq %>/<%= freq+falt %> &nbsp; <strong> Ultima vez: </strong> <%= data %></dd>
+    <% end %>
+    <br/>
+  <% end %>
+
+  <% if @pessoa.celula_que_e_lider_em_treinamento != nil %>
+    <dt><strong>Lider em Treinamento:</strong></dt>
+    <% freq = EncontroSemanal.where(:celula_id=>@pessoa.celula_que_e_lider_em_treinamento.id, :membro_ids.in=>([@pessoa.id])).count %>
+    <% falt = EncontroSemanal.where(:celula_id=>@pessoa.celula_que_e_lider_em_treinamento.id, :faltoso_ids.in=>([@pessoa.id])).count %>
+    <% if freq > 0 %>
+        <% ult = EncontroSemanal.where(:celula_id=>@pessoa.celula_que_e_lider_em_treinamento.id, :membro_ids.in=>([@pessoa.id])).last %>
+        <% data = ult.data.to_s_br %>
+      <% else %>
+        <% data = "" %>
+      <% end %>
+    <dd><%= @pessoa.celula_que_e_lider_em_treinamento.nome %> &nbsp; <strong>Frequencia: </strong> <%= freq %>/<%= freq+falt %> &nbsp; <strong> Ultima vez: </strong> <%= data %></dd>
+    <br/>
+  <% end %>
+
+  <% if @pessoa.celula_que_e_membro != nil %>
+    <dt>Membro:</dt>
+
+    <% freq = EncontroSemanal.where(:celula_id=>@pessoa.celula_que_e_membro.id, :membro_ids.in=>([@pessoa.id])).count %>
+    <% falt = EncontroSemanal.where(:celula_id=>@pessoa.celula_que_e_membro.id, :faltoso_ids.in=>([@pessoa.id])).count %>
+
+    <% if freq > 0 %>
+
+        <% ult = EncontroSemanal.where(:celula_id=>@pessoa.celula_que_e_membro.id, :membro_ids.in=>([@pessoa.id])).last %>
+        <% data = ult.data.to_s_br %>
+
+      <% else %>
+
+        <% data = "" %>
+
+      <% end %>
+
+    <dd><%= @pessoa.celula_que_e_membro.nome %> &nbsp; <strong>Frequencia: </strong> <%= freq %>/<%= freq+falt %> &nbsp; <strong>Ultima vez: </strong> <%= data %></dd>
+    <br/>
+  <% end %>
+
+  <h4>Trilho <%= @pessoa.porcentagem %>%</h4>
+  <hr/>
+
+  <% if @pessoa.trilhos_da_pessoa.count > 0 %>
+    <dt>Concluidos:</dt>
+    <% @pessoa.trilhos_da_pessoa.order_by([:ordem]).each do |t| %>
+      <dd><%= t.nome %></dd>
+    <% end %>
+  <% end %>
+    
+  <br/>
+</dl>
+
+<%= link_to link_icone('voltar'),
+              pessoas_path, :class => 'btn'  %>
+<% if can? :update, @pessoa %>              
+  <%= link_to link_icone('editar'),
+              edit_pessoa_path(@pessoa), :class => 'btn btn-default' %>
+<% end %>
+<% if can? :delete, @pessoa %>
+  <%= link_to link_icone('desativar'), 
+              pessoa_path(@pessoa), :class=>"btn btn-danger", method: :delete, data: { confirm: 'Você está certo disso?' } %> 
+<% end %>
+<% if can? :trilhos, @pessoa %>
+  <%= link_to link_icone("trilhos"), pessoa_trilhos_path(@pessoa), :class => "btn btn-primary" %>
+<% end %>
+<% if can? :create, Pessoa %>
+  <%= link_to link_icone('nova'),
+            new_pessoa_path,
+            :class => 'btn btn-primary' %>
+<% end %>

@@ -1,0 +1,81 @@
+<%- model_class = Celula -%>
+<%= titulo_pagina("Detalhes da Celula","") %>
+
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name(:nome) %>:</strong></dt>
+  <dd><%= @celula.nome %></dd>
+  <dt><strong>Data Criação:</strong></dt>
+  <dd><%= @celula.data_criacao.to_s_br %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:logradouro) %>:</strong></dt>
+  <dd><%= @celula.logradouro %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:numero) %>:</strong></dt>
+  <dd><%= @celula.numero %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:bairro) %>:</strong></dt>
+  <dd><%= @celula.bairro %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:cidade) %>:</strong></dt>
+  <dd><%= @celula.cidade %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:estado) %>:</strong></dt>
+  <dd><%= @celula.estado %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:cep) %>:</strong></dt>
+  <dd><%= @celula.cep %></dd>
+  <dt><strong>Funcionamento:</strong></dt>
+  <dd><%= @celula.dia %>, <%= @celula.hora %>:<%= @celula.minutos %></dd>
+  <dt><strong>Igreja:</strong></dt>
+  <dd><%= detalhes2(@celula.igreja, :nome) %></dd>
+
+  <dt><strong>Cordenadores:</strong></dt>
+  <dd>
+    <% @celula.cordenadores_da_celula.each do |x| %>
+      <%= x.nome %><br/>
+    <% end %>
+  </dd>
+
+  <dt><strong>Supervisores:</strong></dt>
+  <dd>
+    <% @celula.supervisores_da_celula.each do |x| %>
+      <%= x.nome %><br/>
+    <% end %>
+  </dd>
+
+  <dt><strong>Lideres:</strong></dt>
+  <dd>
+    <% @celula.lideres_da_celula.each do |x| %>
+      <%= x.nome %><br/>
+    <% end %>
+  </dd>
+
+  <dt><strong>Lideres em Treinamento:</strong></dt>
+  <dd>
+    <% @celula.lideres_em_treinamento_da_celula.each do |x| %>
+      <%= x.nome %><br/>
+    <% end %>
+  </dd>
+
+  <dt><strong>Membros:</strong></dt>
+  <dd>
+    <% @celula.membros_da_celula.each do |x| %>
+      <%= x.nome %><br/>
+    <% end %>
+  </dd>
+
+</dl>
+
+<%= link_to link_icone('voltar'),
+              celulas_path, :class => 'btn'  %>
+<% if can? :update, @celula %>
+  <%= link_to link_icone('editar'),
+              edit_celula_path(@celula), :class => 'btn btn-default' %>
+<% end %>
+<% if can? :delete, @celula %> 
+  <%= link_to link_icone('desativar'), 
+              celula_path(@celula), :class=>"btn btn-danger", method: :delete, data: { confirm: 'Você está certo disso?' } %> 
+<% end %>
+<% if can? :gerenciar, @celula %>
+  <%= link_to "Gerenciar", celula_gerenciar_path(@celula), :class=>"btn btn-default" %> 
+<% end %>
+
+<% if can? :create, Celula %>
+  <%= link_to link_icone('nova'),
+            new_celula_path,
+            :class => 'btn btn-primary' %>
+<% end %>

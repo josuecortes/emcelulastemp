@@ -1,0 +1,41 @@
+<%- model_class = Igreja -%>
+<%= titulo_pagina("Listagem de Igrejas","") %>
+
+<table id="igrejas" class="display table table-hover" cellspacing="0" width="100%">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name(:nome) %></th>
+      <th><%= model_class.human_attribute_name(:estado) %></th>
+      <th><%= model_class.human_attribute_name(:cidade) %></th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @igrejas.each do |igreja| %>
+      <tr>
+        <td><%= igreja.nome %></td>
+        <td><%= igreja.estado %></td>
+        <td><%= igreja.cidade %></td>
+        <td>
+          <% if can? :read, igreja %>
+            <%= link_to link_icone('detalhes'),
+                    igreja_path(igreja), :class => 'btn' %>
+          <% end %>
+          <% if can? :update, igreja %>
+            <%= link_to link_icone('editar'),
+                    edit_igreja_path(igreja), :class => 'btn btn-default' %>
+          <% end %>
+          <% if can? :delete, igreja %>
+            <%= link_to link_icone('apagar'), igreja_path(igreja), :class=>"btn btn-danger", method: :delete, data: { confirm: 'Você está certo disso?' } %> 
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<% if can? :create, Igreja %>
+  <%= link_to link_icone('nova'),
+            new_igreja_path,
+            :class => 'btn btn-primary' %>
+<% end %>

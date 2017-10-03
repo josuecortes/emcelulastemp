@@ -1,0 +1,25 @@
+
+<br/>
+<div class="container">
+    <div class="row">
+        <div class="col-md-offset-5 col-md-3">
+          <div class="form-login">
+            <h3><strong>EmCelulas | Login.</strong></h3>
+            <h5><%= render 'layouts/messages' %></h5>
+            <%= form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :role => 'form'}) do |f| %>
+              
+              <%= f.email_field :email, :autofocus => true, class: 'form-control input-sm chat-input', id: "userName", placeholder: "E-mail" %>
+              </br>
+              
+              <%= f.password_field :password, class: 'form-control input-sm chat-input', id: "userPassword", placeholder: "Senha" %>
+              </br>
+              <div class="wrapper">
+                <span class="group-btn">     
+                    <%= f.submit 'Entrar', :class => 'btn btn-primary btn-md' %>
+                </span>
+              </div>
+            <% end %>
+          </div>        
+        </div>
+    </div>
+</div>

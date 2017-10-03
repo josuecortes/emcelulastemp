@@ -1,0 +1,85 @@
+<%= simple_form_for @pessoa do |f| %>
+  
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :nome %>
+    </div>
+    <div class="col-md-3">
+      <%= f.input :sexo, :collection => ["MASCULINO","FEMININO"], :input_html => {:class=>"input-medium"} %>
+    </div>
+    <div class="col-md-3">
+      <%= f.input :data_nascimento, :input_html=>{:class=>'data', :value=>@pessoa.data_nascimento.to_s_br} %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3">
+      <%= f.input :estado_civil, :collection => ["SOLTEIRO(A)","CASADO(A)","SEPARADO(A)","DIVORCIADO(A)","VIUVO(A)"], :input_html => {:class=>"input-medium"} %>
+    </div>
+
+    <% if @pessoa.data_casamento == nil %>
+      <div class="col-md-3">
+        <%= f.input :data_casamento, :input_html=>{:class=>'data'} %>
+      </div>
+    <% else %>
+      <div class="col-md-3">
+        <%= f.input :data_casamento, :label=>"Data casamento - se casado(a)", :input_html=>{:class=>'data', :value=>@pessoa.data_casamento.to_s_br} %>
+      </div>
+    <% end %>
+
+    <div class="col-md-3">
+      <%= f.input :celular, :input_html=>{:class=>'phone_with_ddd'} %>
+    </div>
+    <div class="col-md-3">
+      <%= f.input :residencial, :input_html=>{:class=>'phone'} %>
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :logradouro %>
+    </div>
+    <div class="col-md-2">
+      <%= f.input :numero %>
+    </div>
+    <div class="col-md-4">
+      <%= f.input :bairro %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :cidade %>
+    </div>
+    <div class="col-md-6">
+      <%= f.input :estado %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :cep, :input_html=>{:class=>'cep'} %>
+    </div>
+    <div class="col-md-6">
+      <%= f.input :email %>
+    </div>
+  </div>
+
+       
+  <% if current_user.igreja_id != nil %>
+    <%= f.input :igreja_id, :as => :hidden, :input_html => {value: current_user.igreja.id} %>
+  <% else %>
+    <br/>
+    <%= f.input :igreja_id, :label=>"Igreja", :collection=>Igreja.accessible_by(current_ability).order_by([:nome, :asc]).collect {|i| [i.nome, i.id]}, as: :select, :input_html => {:class=>"col-xs-2", :required=>true}  %>  
+  <% end %>
+  
+  <br/>
+
+  <div class="form-actions">
+    <%= f.button :submit, "Salvar", :class => 'btn btn-primary' %>
+    <%= link_to "Cancelar",
+                pessoas_path, :class => 'btn btn-default' %>
+  </div>              
+
+<% end %>

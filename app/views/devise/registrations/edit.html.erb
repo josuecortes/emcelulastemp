@@ -1,0 +1,58 @@
+<%= titulo_pagina("Editar Conta","") %>
+
+<%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+
+    <div class="row">
+      <div class="col-md-6">
+        <%= f.input :nome, required: true %>  
+      </div>
+      <div class="col-md-6">
+      
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <%= f.input :email, required: true %>  
+      </div>
+      <div class="col-md-6">
+      
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <%= f.input :current_password, :label=>"Senha Atual", hint: "Você precisa da sua senha atual para confirmar as alterações", required: true %>  
+      </div>
+      <div class="col-md-6">
+      
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-3">
+        <%= f.input :password, :label=>"Nova Senha", autocomplete: "off", hint: "Deixe em branco se você não planeja mudar a senha atual.", required: false %>
+      </div>
+      <div class="col-md-3">
+        <%= f.input :password_confirmation, :label=>"Confirmar Nova Senha", hint: "Deixe em branco se você não planeja mudar a senha atual", required: false %>
+      </div>
+      <div class="col-md-6">
+      
+      </div>
+    </div>    
+
+    <%= f.input :mudar_senha, :input_html=>{:value=>false}, as: :hidden %>
+
+  </div>
+  
+  <br/>
+  
+  <div class="form-actions">
+    <%= link_to link_icone('voltar'), :back %>
+    <%= f.button :submit, "Atualizar", :class => 'btn-primary' %>
+
+  </div>
+<% end %>

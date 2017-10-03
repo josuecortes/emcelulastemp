@@ -1,0 +1,63 @@
+<%= titulo_pagina("Relatórios da Célula","") %>
+
+<table id="encontro_semanal" class="display table table-hover" cellspacing="0" width="100%">
+  <thead>
+    <tr>
+      <th>Ordem</th>
+      <th>Data</th>
+      <th>Status</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% cont = 0 %>
+    <% @celula.encontro_semanals.order_by([:created_at, 'DESC']).each do |encontro| %>
+      <tr>
+        <td><%= cont %><% cont = cont + 1 %></td>
+        <td><%= encontro.data.to_s_br %></td>
+        <td><%= encontro.status %></td>
+        <td>
+          <% if can? :read, encontro %>
+            <%= link_to link_icone('detalhes'),
+                    celula_encontro_semanal_path(@celula,encontro), :class => 'btn' %>
+          <% end %>
+          <% if encontro.status == "EM ABERTO" %>
+            <% if can? :update, encontro %>
+              <%= link_to link_icone('editar'),
+                        edit_celula_encontro_semanal_path(@celula,encontro), :class => 'btn btn-default' %>
+            <% end %>
+            <% if can? :destroy, encontro %>
+              <%= link_to link_icone('excluir'), celula_encontro_semanal_path(@celula, encontro), :class=>"btn btn-danger", method: :delete, data: { confirm: 'Você está certo disso?' } %> 
+            <% end %>
+            <% if can? :enviar, encontro %>
+              <%= link_to link_icone('enviar'), celula_encontro_semanal_enviar_path(@celula, encontro), :class=>"btn btn-success", data: { confirm: 'Você está certo disso?' } %>
+            <% end %>
+          <% end %>
+          <% if encontro.status == "ENVIADO" %>
+            <% if can? :receber, encontro %>
+              <%= link_to link_icone('receber'), celula_encontro_semanal_receber_path(@celula, encontro), :class=>"btn btn-success", data: { confirm: 'Você está certo disso?' } %>
+            <% end %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to link_icone('voltar'),
+              celulas_path, :class => 'btn'  %>
+<% if current_user.pessoa_id != nil %>
+  <% if @celula.lideres_da_celula_ids.include?current_user.pessoa.id %>
+    <% if can? :create, EncontroSemanal %>
+      <%= link_to link_icone('novo'),
+                  new_celula_encontro_semanal_path,
+                  :class => 'btn btn-primary' %>
+    <% end %>
+  <% else %>
+    <% if current_user.e_secretaria %>
+      <%= link_to link_icone('novo'),
+                  new_celula_encontro_semanal_path,
+                  :class => 'btn btn-primary' %>
+    <% end %>
+  <% end %>
+<% end %>

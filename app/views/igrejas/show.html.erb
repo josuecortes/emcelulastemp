@@ -1,0 +1,35 @@
+<%- model_class = Igreja -%>
+<%= titulo_pagina("Detalhes da Igreja","") %>
+
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name(:nome) %>:</strong></dt>
+  <dd><%= @igreja.nome %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:logradouro) %>:</strong></dt>
+  <dd><%= @igreja.logradouro %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:numero) %>:</strong></dt>
+  <dd><%= @igreja.numero %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:bairro) %>:</strong></dt>
+  <dd><%= @igreja.bairro %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:cidade) %>:</strong></dt>
+  <dd><%= @igreja.cidade %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:estado) %>:</strong></dt>
+  <dd><%= @igreja.estado %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:cep) %>:</strong></dt>
+  <dd><%= @igreja.cep %></dd>
+</dl>
+
+<%= link_to link_icone('voltar'),
+              igrejas_path, :class => 'btn'  %>
+<% if can? :update, @igreja %>              
+  <%= link_to link_icone('editar'),
+              edit_igreja_path(@igreja), :class => 'btn btn-default' %>
+<% end %>
+<% if can? :delete, @igreja %>
+  <%= link_to link_icone('apagar'), 
+              igreja_path(@igreja), :class=>"btn btn-danger", method: :delete, data: { confirm: 'Você está certo disso?' } %> 
+<% end %>
+<% if can? :create, Igreja %>
+  <%= link_to link_icone('nova'),
+            new_igreja_path,
+            :class => 'btn btn-primary' %>
+<% end %>

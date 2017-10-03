@@ -1,0 +1,21 @@
+<%- model_class = Trilho -%>
+<%= titulo_pagina("Detalhes do Trilho","") %>
+
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name(:ordem) %>:</strong></dt>
+  <dd><%= @trilho.ordem %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:nome) %>:</strong></dt>
+  <dd><%= @trilho.nome %></dd>
+  <dt><strong>Igreja:</strong></dt>
+  <dd><%= detalhes2(@trilho.igreja, :nome) %></dd>
+</dl>
+
+<%= link_to link_icone('voltar'),
+              trilhos_path, :class => 'btn'  %>
+<%= link_to link_icone('editar'),
+              edit_trilho_path(@trilho), :class => 'btn btn-default' %>
+<%= link_to link_icone('desativar'), 
+              trilho_path(@trilho), :class=>"btn btn-danger", method: :delete, data: { confirm: 'Você está certo disso?' } %> 
+<%= link_to link_icone('novo'),
+            new_trilho_path,
+            :class => 'btn btn-primary' %>

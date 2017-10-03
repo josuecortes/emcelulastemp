@@ -1,0 +1,43 @@
+<%- model_class = Celula -%>
+<%= titulo_pagina("Gerenciando Celula","") %>
+
+<div class="tabbable"> <!-- Only required for left/right tabs -->
+  <ul class="nav nav-tabs">
+    <li><a href="#tab1" data-toggle="tab">MEMBROS</a></li>
+    <li><a href="#tab2" data-toggle="tab">LIDERES</a></li>
+    <li><a href="#tab3" data-toggle="tab">SUPERVISORES</a></li>
+    <li><a href="#tab4" data-toggle="tab">CORDENADORES</a></li>
+    <li><a href="#tab5" data-toggle="tab">TODOS</a></li>
+  </ul>
+  <div class="tab-content">
+    
+    <div class="tab-pane active" id="tab1">
+      <%= render :partial => 'membros' %>
+    </div>
+
+    <div class="tab-pane" id="tab2">
+      <%= render :partial => 'lideres' %>
+    </div>
+
+    <div class="tab-pane" id="tab3">
+      <%= render :partial => 'supervisores' %>
+    </div>
+
+    <div class="tab-pane" id="tab4">
+      <%= render :partial => 'cordenadores' %>
+    </div>
+
+    <div class="tab-pane" id="tab5">
+      <%= render :partial => 'todos' %>
+    </div>
+
+  </div>
+</div>
+
+<br/>
+<%= link_to link_icone('voltar'), celulas_path, :class=>'btn btn-default' %>
+
+
+
+
+

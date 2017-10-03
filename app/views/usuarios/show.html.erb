@@ -1,0 +1,40 @@
+<%- model_class = User -%>
+<%= titulo_pagina("Detalhes do Usuário","") %>
+
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name(:nome) %>:</strong></dt>
+  <dd><%= @usuario.nome %></dd>
+  <dt><strong>Permissão:</strong></dt>
+  <dd>
+    <% @usuario.roles.each do |r| %>
+      <%= r.nome %> 
+    <% end %>
+  </dd> 
+  <dt><strong><%= model_class.human_attribute_name(:ativo) %>:</strong></dt>
+  <dd><%= simnao(@usuario.ativo) %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:mudar_senha) %>:</strong></dt>
+  <dd><%= simnao(@usuario.mudar_senha) %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:email) %>:</strong></dt>
+  <dd><%= @usuario.email %></dd>
+    
+  <dt><strong>Pessoa Relacionada:</strong></dt>
+  <dd><%= detalhes2(@usuario.pessoa,:nome) %></dd>
+
+  <dt><strong>Igreja:</strong></dt>
+  <dd><%= detalhes2(@usuario.igreja,:nome) %></dd>
+  
+  <dt><strong>Ultimo login em:</strong></dt>
+  <dd><%= @usuario.last_sign_in_at %></dd>
+  <dt><strong>Ultimo IP:</strong></dt>
+  <dd><%= @usuario.last_sign_in_ip %></dd>
+</dl>
+
+<%= link_to link_icone('voltar'),
+              usuarios_path, :class => 'btn'  %>
+<%= link_to link_icone('editar'),
+              edit_usuario_path(@usuario), :class => 'btn btn-default' %>
+<%= link_to link_icone('desativar'), 
+              usuario_path(@usuario), :class=>"btn btn-danger", method: :delete, data: { confirm: 'Você está certo disso?' } %> 
+<%= link_to link_icone('novo'),
+            new_usuario_path,
+            :class => 'btn btn-primary' %>

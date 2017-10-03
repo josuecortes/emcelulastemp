@@ -1,0 +1,55 @@
+<%- model_class = Pessoa -%>
+<%= titulo_pagina("Listagem de Pessoas","") %>
+
+<table id="pessoas" class="display table table-hover" cellspacing="0" width="100%">
+  <thead>
+    <tr>
+      
+      <th><%= model_class.human_attribute_name(:nome) %></th>
+      <th><%= model_class.human_attribute_name(:email) %></th>
+      <th><%= model_class.human_attribute_name(:celular) %></th>
+      <th>Trilho</th>
+      <th>Ações</th>
+      
+    </tr>
+  </thead>
+  <tbody>
+    <% @pessoas.each do |pessoa| %>
+      <tr>
+        
+        <td><%= pessoa.nome %></td>
+        <td><%= pessoa.email %></td>
+        <td><%= pessoa.celular %></td>
+        <td><%= pessoa.porcentagem %>%</td>
+        <td>
+            <% if pessoa.ativo == true %>
+            <%= link_to link_icone('detalhes'),
+                      pessoa_path(pessoa), :class => 'btn' %>
+            <% if can? :update, pessoa %>
+              <%= link_to link_icone('editar'),
+                      edit_pessoa_path(pessoa), :class => 'btn btn-default' %>
+            <% end %>
+            <% if can? :delete, pessoa %>
+              <%= link_to link_icone('desativar'), pessoa_path(pessoa), :class=>"btn btn-danger", method: :delete, data: { confirm: 'Você está certo disso?' } %> 
+            <% end %>
+            <% if can? :trilhos, pessoa %>
+              <%= link_to link_icone("trilhos"), pessoa_trilhos_path(pessoa), :class => "btn btn-primary btn-mini" %>
+            <% end %>
+          <% else %>            
+            <% if can? :delete, pessoa %>
+              <%= link_to link_icone('ativar'), pessoa_path(pessoa), :class=>"btn btn-success", method: :delete, data: { confirm: 'Você está certo disso?' } %> 
+            <% end %> 
+          <% end %>
+          
+        </td>
+        
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<% if can? :create, Pessoa %>
+  <%= link_to link_icone('nova'),
+            new_pessoa_path,
+            :class => 'btn btn-primary' %>
+<% end %>

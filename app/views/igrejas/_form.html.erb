@@ -1,0 +1,47 @@
+<%= simple_form_for @igreja do |f| %>
+  
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :nome %>  
+    </div>
+    <div class="col-md-6">
+      <%= f.input :logradouro %>    
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :numero %>    
+    </div>
+    <div class="col-md-6">
+      <%= f.input :bairro %>    
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :cidade %>    
+    </div>
+    <div class="col-md-6">
+      <%= f.input :estado %>    
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :cep, :input_html=>{:class=>'cep'} %>    
+    </div>
+    <div class="col-md-6">
+      
+    </div>
+  </div>  
+  
+  <br/>
+
+  <div class="form-actions">
+    <%= f.button :submit, "Salvar", :class => 'btn btn-primary' %>
+    <%= link_to "Cancelar",
+                igrejas_path, :class => 'btn btn-default' %>
+  </div>              
+
+<% end %>

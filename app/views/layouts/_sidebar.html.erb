@@ -1,0 +1,108 @@
+<!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+<div class="collapse navbar-collapse navbar-ex1-collapse">
+    <ul class="nav navbar-nav side-nav">
+        <li>
+            <% if params[:controller].to_s == 'home' %>
+                <%= link_to raw("<i class='fa fa-home fa-fw'></i> Home"), root_url, :class=>"active-menu" %>
+            <% else %>
+                <%= 
+                    #link_to raw("<i class='fa fa-home fa-fw'></i> Home"), root_url, :target=>"_blank" para abrir em nova aba
+                 %>
+                <%= link_to raw("<i class='fa fa-home fa-fw'></i> Home"), root_url %>
+            <% end %>
+        </li>
+
+                              
+        <% if can? :manage, User %>
+            <% if can? :manage, Role %>
+                <li>
+                    
+                    <% if params[:controller].to_s == 'usuarios' %>
+                        <%= link_to raw("<i class='fa fa-cog fa-fw'></i> Usuários"), usuarios_path, :class=>"active-menu" %>
+                    <% else %>    
+                        <%= link_to raw("<i class='fa fa-cog fa-fw'></i> Usuários"), usuarios_path %>
+                    <% end %>
+                </li>
+            <% end %>
+        <% end %>
+
+        <% if can? :manage, Igreja %>
+            
+            <li>
+                
+                <% if params[:controller].to_s == 'igrejas' %>
+                    <%= link_to raw("<i class='fa fa-university fa-fw'></i> Igrejas"), igrejas_path, :class=>"active-menu" %>
+                <% else %>    
+                    <%= link_to raw("<i class='fa fa-university fa-fw'></i> Igrejas"), igrejas_path %>
+                <% end %>
+            </li>
+            
+        <% end %>
+
+        
+            
+        <li>
+            
+            <% if can? :show, :relatorios %>    
+                <% if params[:controller].to_s == 'relatorios' %>
+                    <%= link_to raw("<i class='fa fa-file-text-o fa-fw'></i> Relatórios"), relatorios_index_path, :class=>"active-menu" %>
+                <% else %>    
+                    <%= link_to raw("<i class='fa fa-file-text-o fa-fw'></i> Relatórios"), relatorios_index_path %>
+                <% end %>
+            <% end %>
+
+        </li>
+            
+       
+
+        <% if can? :manage, Pessoa %>
+            
+            <li>
+                
+                <% if params[:controller].to_s == 'pessoas' %>
+                    <%= link_to raw("<i class='fa fa-users fa-fw'></i> Pessoas"), pessoas_path, :class=>"active-menu" %>
+                <% else %>    
+                    <%= link_to raw("<i class='fa fa-users fa-fw'></i> Pessoas"), pessoas_path %>
+                <% end %>
+            </li>
+            
+        <% end %>
+
+        <% if can? :read, Celula %>
+            
+            <li>
+                
+                <% if params[:controller].to_s == 'celulas' %>
+                    <%= link_to raw("<i class='fa fa-circle-o-notch fa-fw'></i> Células"), celulas_path, :class=>"active-menu" %>
+                <% else %>    
+                    <%= link_to raw("<i class='fa fa-circle-o-notch fa-fw'></i> Células"), celulas_path %>
+                <% end %>
+            </li>
+            
+        <% end %>
+
+        <% if can? :manage, Trilho %>
+            
+            <li>
+                
+                <% if params[:controller].to_s == 'trilhos' %>
+                    <%= link_to raw("<i class='fa fa-road fa-fw'></i> Trilhos"), trilhos_path, :class=>"active-menu" %>
+                <% else %>    
+                    <%= link_to raw("<i class='fa fa-road fa-fw'></i> Trilhos"), trilhos_path %>
+                <% end %>
+            </li>
+            
+        <% end %>
+        
+    </ul>
+</div>
+<!-- /.navbar-collapse -->
+
+
+
+
+
+
+
+
+

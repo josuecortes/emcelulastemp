@@ -1,0 +1,50 @@
+<% if can? :trilhos, @pessoa %>
+
+  <% content_for :titulo do %>
+    Trilhos da Pessoa <%= @pessoa.nome %>
+  <% end %>
+  <br/>
+
+  <strong>Porcentagem: <%= @pessoa.porcentagem %>%</strong>
+  <div class="progress">
+    <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <%= @pessoa.porcentagem %>%;">
+      <%= @pessoa.porcentagem %>%
+    </div>
+  </div>
+  <br/>
+  <table id="pessoa_trilhos" class="display table table-hover" cellspacing="0" width="100%">
+    <thead>
+      <tr>
+        <th>Ordem</th>
+        <th>Nome</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+      <% @trilhos.order_by([:ordem, :asc], [:nome, :asc]).each do |trilho| %>
+        <tr>
+          <td><%= trilho.ordem %></td>
+          <td><%= trilho.nome %></td>
+          <td>
+          	<%= link_to link_icone("apagar"), pessoa_remover_trilho_url(@pessoa, :trilho_id=>trilho.id), :class=>"btn btn-danger", method: :delete, data: { confirm: 'Você está certo disso?' } %>        	
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= link_to link_icone('voltar'),
+              pessoas_path, :class => 'btn'  %>
+
+  <%= link_to link_icone('novo'),
+            pessoa_adicionar_trilho_path(@pessoa),
+            :class => 'btn btn-primary' %>
+
+<% else %>
+  <%= link_to link_icone('voltar'),
+              pessoas_path, :class => 'btn'  %>
+
+<% end %>
+
+

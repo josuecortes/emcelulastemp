@@ -1,0 +1,29 @@
+<%= simple_form_for @trilho do |f| %>
+  
+  <div class="row">
+    <div class="col-md-3">
+      <%= f.input :ordem %>
+    </div>
+    <div class="col-md-6">
+      <%= f.input :nome %>
+    </div>
+    <div class="col-md-3">
+    </div>
+  </div>
+   
+  <% if current_user.igreja_id != nil %>
+    <%= f.input :igreja_id, :as => :hidden, :input_html => {value: current_user.igreja.id} %>
+  <% else %>
+    <br/>
+    <%= f.input :igreja_id, :label=>"Igreja", :collection=>Igreja.accessible_by(current_ability).order_by([:nome, :asc]).collect {|i| [i.nome, i.id]}, as: :select, :input_html => {:class=>"col-xs-2", :required=>true}  %>  
+  <% end %>
+ 
+  <br/>
+
+  <div class="form-actions">
+    <%= f.button :submit, "Salvar", :class => 'btn btn-primary' %>
+    <%= link_to "Cancelar",
+                trilhos_path, :class => 'btn btn-default' %>
+  </div>              
+
+<% end %>

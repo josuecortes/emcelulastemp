@@ -1,0 +1,24 @@
+<%= titulo_pagina("Adicionar Novo Coordenador","") %>
+
+<table id="coordenadores" class="display table table-hover" cellspacing="0" width="100%">
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th></th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @pessoas.each do |pessoa| %>
+      <tr>
+        <td><%= pessoa.nome %></td>
+        <td></td>
+        <td>
+           <%= link_to "Adicionar", celula_salvar_cordenador_url(@celula,:pessoa_id => pessoa.id), :class=>"btn btn-success" %> 
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to link_icone('voltar'), celula_gerenciar_path(@celula), :class=>'btn btn-default' %>

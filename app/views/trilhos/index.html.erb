@@ -1,0 +1,33 @@
+<%- model_class = Trilho -%>
+<%= titulo_pagina("Listagem de Trilhos","") %>
+
+<table id="trilhos" class="display table table-hover" cellspacing="0" width="100%">
+  <thead>
+    <tr>
+      <th>Ordem</th>
+      <th><%= model_class.human_attribute_name(:nome) %></th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @trilhos.each do |trilho| %>
+      <tr>
+        <td><%= trilho.ordem %></td>
+        <td><%= trilho.nome %></td>
+        <td>
+            <%= link_to link_icone('detalhes'),
+                      trilho_path(trilho), :class => 'btn' %>
+            <%= link_to link_icone('editar'),
+                      edit_trilho_path(trilho), :class => 'btn btn-default' %>
+            <% if can? :delete, trilho %>
+              <%= link_to link_icone('apagar'), trilho_path(trilho), :class=>"btn btn-danger", method: :delete, data: { confirm: 'Você está certo disso?' } %> 
+            <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to link_icone('novo'),
+            new_trilho_path,
+            :class => 'btn btn-primary' %>

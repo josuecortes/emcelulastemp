@@ -1,0 +1,81 @@
+<%= titulo_pagina("Novo Relatório","") %>
+
+<%= simple_form_for @encontro_semanal, :url=>celula_encontro_semanals_path(@celula, @encontro_semanal), :method=>:post do |f| %>
+		
+	<div class="row">
+    <div class="col-md-3">
+      <%= f.input :data, :input_html=>{:class=>'data',:value=>@encontro_semanal.data.to_s_br},:as=>:string %>
+    </div>
+    <div class="col-md-3">
+      <%= f.input :houve_celula, :label=>"Houve Célula", :as => :select, :include_blank => false %>
+    </div>
+    <div class="col-md-6">
+      <%= f.input :membro_ids, :label=>"Selecione os lideres que participaram deste encontro", :collection=>@celula.lideres_da_celula.order_by([:nome, :asc]).collect {|m| [m.nome, m.id]}, as: :check_boxes, :input_html => {:class=>"input-xlarge", :required=>true}  %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3">
+      <%= f.input :numero_visitantes, :label=>"Numero de Visitantes", :collection => 0..20, :input_html => {:class=>"input-medium"} %>
+    </div>
+    <div class="col-md-3">
+      <%= f.input :numero_criancas, :label=>"Numero de Crianças", :collection => 0..20, :input_html => {:class=>"input-medium"} %>	
+    </div>
+    <div class="col-md-6">
+    	<%= f.input :membro_ids, :label=>"Selecione os lideres em treinamento que participaram deste encontro", :collection=>@celula.lideres_em_treinamento_da_celula.order_by([:nome, :asc]).collect {|m| [m.nome, m.id]}, as: :check_boxes, :input_html => {:class=>"input-xlarge", :required=>true}  %>	
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3">
+    	<%= f.input :numero_decisoes, :label=>"Numero de Decisões", :collection => 0..20, :input_html => {:class=>"input-medium"} %>
+    </div>
+    <div class="col-md-3">
+      <%= f.input :numero_reconciliacoes, :label=>"Numero de Reconciliações", :collection => 0..20, :input_html => {:class=>"input-medium"} %>
+    </div>
+    <div class="col-md-6">
+      <%= f.input :membro_ids, :label=>"Selecione os membros que participaram deste encontro", :collection=>@celula.membros_da_celula.order_by([:nome, :asc]).collect {|m| [m.nome, m.id]}, as: :check_boxes, :input_html => {:class=>"input-xlarge", :required=>true}  %>	
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+    	<%= f.input :palavra, :label=>"Palavra Ministrada" %>	  	
+    </div>
+    <div class="col-md-6">
+      <%= f.input :ministrante, :label=>"Quem Ministrou a Palavra" %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3">
+      <%= f.input :ofertas, :label=>"Valor Total das Ofertas", :input_html=>{:class=>'oferta'} %>
+    </div>
+    <div class="col-md-3">
+      <%= f.input :dizimos, :label=>"Valor Total dos Dizimos", :input_html=>{:class=>'dizimo'} %>
+    </div>
+    <div class="col-md-6">
+      
+    </div>
+  </div>
+
+	<%= 
+	#f.input :nome_visitantes, :label=>"Nome dos Visitantes", as: :text, :input_html => {:class=>"input-xxlarge", :rows => 3}, :placeholder=>"Digite o nome dos visitantes" 
+	%>
+
+	
+	<%= f.input :status, :as => :hidden, :input_html => {value: "EM ABERTO"} %>
+	<%= f.input :celula_id, :as => :hidden, :input_html => {value: @celula.id} %>
+	
+	<br/>
+
+	<div class="form-actions">
+    <%= f.button :submit, "Salvar", :class => 'btn btn-primary' %>
+    <%= link_to "Cancelar",
+                celula_encontro_semanals_path(@celula), :class => 'btn btn-default' %>
+  </div> 
+
+<% end %>
+
+
+

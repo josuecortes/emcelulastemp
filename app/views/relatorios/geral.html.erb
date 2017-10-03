@@ -1,0 +1,1572 @@
+<%= titulo_pagina("Relatório Geral","") %>
+
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+  
+ 
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingOne">
+      <h4 class="panel-title">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+          Pessoas <span class="pull-right"><%= @pessoas.count %></span>
+        </a>
+      </h4>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+      <div class="panel-body">
+        
+        <table id="pessoas" class="display table table-hover" cellspacing="0" width="100%">
+          <thead>
+            <tr>
+              
+              <th>Nome</th>
+              <th>Trilho</th>
+              <th></th>
+
+            </tr>
+          </thead>
+          <tbody>
+            <% cont_pessoas = 0 %>
+            <% @pessoas.each do |pessoa| %>
+              <tr>
+                
+                <td><%= pessoa.nome %></td>
+                <td><%= pessoa.porcentagem %>%</td>
+
+                <td>
+                  <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-default btn-small pull-right" data-toggle="modal" data-target="#myModalpessoas<%= cont_pessoas %>">
+                      Leia +
+                    </button>
+                  <!-- Fim Button trigger modal -->
+
+                  <!-- Modal -->
+                    <div class="modal fade" id="myModalpessoas<%= cont_pessoas %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel"><%= pessoa.nome %></h4>
+                          </div>
+                          <div class="modal-body">
+                            
+                            <dl class="dl-horizontal">
+                              
+                              <dt><strong>Nome:</strong></dt>
+                              <dd><%= pessoa.nome %></dd>
+                              <hr/>
+
+                              <dt><strong>Sexo:</strong></dt>
+                              <dd><%= pessoa.sexo %></dd>
+                              <dt><strong>Data Nascimento:</strong></dt>
+                              <dd><%= pessoa.data_nascimento.to_s_br %></dd>
+
+                              <h4>Contato</h4>
+                              <hr/>
+
+                              <dt><strong>E-mail:</strong></dt>
+                              <dd><%= pessoa.email %></dd>
+                              <dt><strong>Celular:</strong></dt>
+                              <dd><%= pessoa.celular %></dd>
+                              <dt><strong>Residencial:</strong></dt>
+                              <dd><%= pessoa.residencial %></dd>
+
+                              <h4>Endereço</h4>
+                              <hr/>
+
+                              <dt><strong>Logradouro:</strong></dt>
+                              <dd><%= pessoa.logradouro %></dd>
+                              <dt><strong>Numero:</strong></dt>
+                              <dd><%= pessoa.numero %></dd>
+                              <dt><strong>Bairro:</strong></dt>
+                              <dd><%= pessoa.bairro %></dd>
+                              <dt><strong>Cidade:</strong></dt>
+                              <dd><%= pessoa.cidade %></dd>
+                              <dt><strong>Estado:</strong></dt>
+                              <dd><%= pessoa.estado %></dd>
+                              <dt><strong>Cep:</strong></dt>
+                              <dd><%= pessoa.cep %></dd>
+                                
+                              <h4>Igreja</h4>
+                              <hr/>
+
+                              <dt><strong>Igreja:</strong></dt>
+                              <dd><%= detalhes2(pessoa.igreja, :nome) %></dd>
+                              
+                              <h4>Celula</h4>
+                              <hr/>
+
+                              <% if pessoa.celulas_que_e_cordenador != [] %>
+                                <dt><strong>Cordenador:</strong></dt>
+                                <% pessoa.celulas_que_e_cordenador.each do |c| %>
+                                  <dd><%= c.nome %></dd>
+                                <% end %>
+                                <br/>
+                              <% end %>
+
+
+                              <% if pessoa.celulas_que_e_supervisor != [] %>
+                                <dt><strong>Supervisor:</strong></dt>
+                                <% pessoa.celulas_que_e_supervisor.each do |c| %>
+                                  <dd><%= c.nome %></dd>
+                                <% end %>
+                                <br/>
+                              <% end %>
+
+                              <% if pessoa.celulas_que_e_lider != [] %>
+                                <dt><strong>Lider:</strong></dt>
+                                <% pessoa.celulas_que_e_lider.each do |c| %>
+                                  <% freq = EncontroSemanal.where(:celula_id=>c.id, :membro_ids.in=>([pessoa.id])).count %>
+                                  <% falt = EncontroSemanal.where(:celula_id=>c.id, :faltoso_ids.in=>([pessoa.id])).count %>
+                                  <% if freq > 0 %>
+                                    <% ult = EncontroSemanal.where(:celula_id=>c.id, :membro_ids.in=>([pessoa.id])).last %>
+                                    <% data = ult.data.to_s_br %>
+                                  <% else %>
+                                    <% data = "" %>
+                                  <% end %>
+                                  <dd><%= c.nome %> &nbsp; <strong>Frequencia: </strong> <%= freq %>/<%= freq+falt %> &nbsp; <strong> Ultima vez: </strong> <%= data %></dd>
+                                <% end %>
+                                <br/>
+                              <% end %>
+
+                              <% if pessoa.celula_que_e_lider_em_treinamento != nil %>
+                                <dt><strong>Lider em Treinamento:</strong></dt>
+                                <% freq = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_lider_em_treinamento.id, :membro_ids.in=>([pessoa.id])).count %>
+                                <% falt = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_lider_em_treinamento.id, :faltoso_ids.in=>([pessoa.id])).count %>
+                                <% if freq > 0 %>
+                                    <% ult = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_lider_em_treinamento.id, :membro_ids.in=>([pessoa.id])).last %>
+                                    <% data = ult.data.to_s_br %>
+                                  <% else %>
+                                    <% data = "" %>
+                                  <% end %>
+                                <dd><%= pessoa.celula_que_e_lider_em_treinamento.nome %> &nbsp; <strong>Frequencia: </strong> <%= freq %>/<%= freq+falt %> &nbsp; <strong> Ultima vez: </strong> <%= data %></dd>
+                                <br/>
+                              <% end %>
+
+                              <% if pessoa.celula_que_e_membro != nil %>
+                                <dt>Membro:</dt>
+
+                                <% freq = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_membro.id, :membro_ids.in=>([pessoa.id])).count %>
+                                <% falt = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_membro.id, :faltoso_ids.in=>([pessoa.id])).count %>
+
+                                <% if freq > 0 %>
+
+                                    <% ult = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_membro.id, :membro_ids.in=>([pessoa.id])).last %>
+                                    <% data = ult.data.to_s_br %>
+
+                                  <% else %>
+
+                                    <% data = "" %>
+
+                                  <% end %>
+
+                                <dd><%= pessoa.celula_que_e_membro.nome %> &nbsp; <strong>Frequencia: </strong> <%= freq %>/<%= freq+falt %> &nbsp; <strong>Ultima vez: </strong> <%= data %></dd>
+                                <br/>
+                              <% end %>
+
+                              <h4>Trilho <%= pessoa.porcentagem %>%</h4>
+                              <hr/>
+
+                              <% if pessoa.trilhos_da_pessoa.count > 0 %>
+                                <dt>Concluidos:</dt>
+                                <% pessoa.trilhos_da_pessoa.order_by([:ordem]).each do |t| %>
+                                  <dd><%= t.nome %></dd>
+                                <% end %>
+                              <% end %>
+                                
+                              <br/>
+                            </dl>
+                            
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <!-- Fim Modal -->
+                  <% cont_pessoas = cont_pessoas + 1 %>
+                
+                </td>
+                              
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingTwo">
+      <h4 class="panel-title">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+          Pessoas sem Células <span class="pull-right"><%= @pessoas_sem_celula.count %></span>
+        </a>
+      </h4>
+    </div>
+    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+      <div class="panel-body">
+        
+        <table id="pessoas" class="display table table-hover" cellspacing="0" width="100%">
+          <thead>
+            <tr>
+              
+              <th>Nome</th>
+              <th>Trilho</th>
+              <th></th>
+                            
+            </tr>
+          </thead>
+          <tbody>
+            <% cont_pessoas_sem_celula = 0 %>
+            <% @pessoas_sem_celula.each do |pessoa| %>
+              <tr>
+                
+                <td><%= pessoa.nome %></td>
+                <td><%= pessoa.porcentagem %>%</td>
+                
+                <td>
+                  <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-default btn-small pull-right" data-toggle="modal" data-target="#myModalpessoas_sem_celula<%= cont_pessoas_sem_celula %>">
+                      Leia +
+                    </button>
+                  <!-- Fim Button trigger modal -->
+
+                  <!-- Modal -->
+                    <div class="modal fade" id="myModalpessoas_sem_celula<%= cont_pessoas_sem_celula %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel"><%= pessoa.nome %></h4>
+                          </div>
+                          <div class="modal-body">
+                            
+                            <dl class="dl-horizontal">
+
+                              <dt><strong>Nome:</strong></dt>
+                              <dd><%= pessoa.nome %></dd>
+                              <hr/>
+
+                              <dt><strong>Sexo:</strong></dt>
+                              <dd><%= pessoa.sexo %></dd>
+                              <dt><strong>Data Nascimento:</strong></dt>
+                              <dd><%= pessoa.data_nascimento.to_s_br %></dd>
+
+                              <h4>Contato</h4>
+                              <hr/>
+
+                              <dt><strong>E-mail:</strong></dt>
+                              <dd><%= pessoa.email %></dd>
+                              <dt><strong>Celular:</strong></dt>
+                              <dd><%= pessoa.celular %></dd>
+                              <dt><strong>Residencial:</strong></dt>
+                              <dd><%= pessoa.residencial %></dd>
+
+                              <h4>Endereço</h4>
+                              <hr/>
+
+                              <dt><strong>Logradouro:</strong></dt>
+                              <dd><%= pessoa.logradouro %></dd>
+                              <dt><strong>Numero:</strong></dt>
+                              <dd><%= pessoa.numero %></dd>
+                              <dt><strong>Bairro:</strong></dt>
+                              <dd><%= pessoa.bairro %></dd>
+                              <dt><strong>Cidade:</strong></dt>
+                              <dd><%= pessoa.cidade %></dd>
+                              <dt><strong>Estado:</strong></dt>
+                              <dd><%= pessoa.estado %></dd>
+                              <dt><strong>Cep:</strong></dt>
+                              <dd><%= pessoa.cep %></dd>
+                                
+                              <h4>Igreja</h4>
+                              <hr/>
+
+                              <dt><strong>Igreja:</strong></dt>
+                              <dd><%= detalhes2(pessoa.igreja, :nome) %></dd>
+                              
+                              <h4>Celula</h4>
+                              <hr/>
+
+                              <% if pessoa.celulas_que_e_cordenador != [] %>
+                                <dt><strong>Cordenador:</strong></dt>
+                                <% pessoa.celulas_que_e_cordenador.each do |c| %>
+                                  <dd><%= c.nome %></dd>
+                                <% end %>
+                                <br/>
+                              <% end %>
+
+
+                              <% if pessoa.celulas_que_e_supervisor != [] %>
+                                <dt><strong>Supervisor:</strong></dt>
+                                <% pessoa.celulas_que_e_supervisor.each do |c| %>
+                                  <dd><%= c.nome %></dd>
+                                <% end %>
+                                <br/>
+                              <% end %>
+
+                              <% if pessoa.celulas_que_e_lider != [] %>
+                                <dt><strong>Lider:</strong></dt>
+                                <% pessoa.celulas_que_e_lider.each do |c| %>
+                                  <% freq = EncontroSemanal.where(:celula_id=>c.id, :membro_ids.in=>([pessoa.id])).count %>
+                                  <% falt = EncontroSemanal.where(:celula_id=>c.id, :faltoso_ids.in=>([pessoa.id])).count %>
+                                  <% if freq > 0 %>
+                                    <% ult = EncontroSemanal.where(:celula_id=>c.id, :membro_ids.in=>([pessoa.id])).last %>
+                                    <% data = ult.data.to_s_br %>
+                                  <% else %>
+                                    <% data = "" %>
+                                  <% end %>
+                                  <dd><%= c.nome %> &nbsp; <strong>Frequencia: </strong> <%= freq %>/<%= freq+falt %> &nbsp; <strong> Ultima vez: </strong> <%= data %></dd>
+                                <% end %>
+                                <br/>
+                              <% end %>
+
+                              <% if pessoa.celula_que_e_lider_em_treinamento != nil %>
+                                <dt><strong>Lider em Treinamento:</strong></dt>
+                                <% freq = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_lider_em_treinamento.id, :membro_ids.in=>([pessoa.id])).count %>
+                                <% falt = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_lider_em_treinamento.id, :faltoso_ids.in=>([pessoa.id])).count %>
+                                <% if freq > 0 %>
+                                    <% ult = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_lider_em_treinamento.id, :membro_ids.in=>([pessoa.id])).last %>
+                                    <% data = ult.data.to_s_br %>
+                                  <% else %>
+                                    <% data = "" %>
+                                  <% end %>
+                                <dd><%= pessoa.celula_que_e_lider_em_treinamento.nome %> &nbsp; <strong>Frequencia: </strong> <%= freq %>/<%= freq+falt %> &nbsp; <strong> Ultima vez: </strong> <%= data %></dd>
+                                <br/>
+                              <% end %>
+
+                              <% if pessoa.celula_que_e_membro != nil %>
+                                <dt>Membro:</dt>
+
+                                <% freq = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_membro.id, :membro_ids.in=>([pessoa.id])).count %>
+                                <% falt = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_membro.id, :faltoso_ids.in=>([pessoa.id])).count %>
+
+                                <% if freq > 0 %>
+
+                                    <% ult = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_membro.id, :membro_ids.in=>([pessoa.id])).last %>
+                                    <% data = ult.data.to_s_br %>
+
+                                  <% else %>
+
+                                    <% data = "" %>
+
+                                  <% end %>
+
+                                <dd><%= pessoa.celula_que_e_membro.nome %> &nbsp; <strong>Frequencia: </strong> <%= freq %>/<%= freq+falt %> &nbsp; <strong>Ultima vez: </strong> <%= data %></dd>
+                                <br/>
+                              <% end %>
+
+                              <h4>Trilho <%= pessoa.porcentagem %>%</h4>
+                              <hr/>
+
+                              <% if pessoa.trilhos_da_pessoa.count > 0 %>
+                                <dt>Concluidos:</dt>
+                                <% pessoa.trilhos_da_pessoa.order_by([:ordem]).each do |t| %>
+                                  <dd><%= t.nome %></dd>
+                                <% end %>
+                              <% end %>
+                                
+                              <br/>
+                            </dl>
+                            
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <!-- Fim Modal -->
+                  <% cont_pessoas_sem_celula = cont_pessoas_sem_celula + 1 %>
+                
+                </td>
+
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+
+
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="heading3">
+      <h4 class="panel-title">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse3" aria-expanded="false" aria-controls="collapse3">
+          Lideres em Treinamento <span class="pull-right"><%= @em_treinamento.count %></span>
+        </a>
+      </h4>
+    </div>
+    <div id="collapse3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading3">
+      <div class="panel-body">
+        
+        <table id="pessoas" class="display table table-hover" cellspacing="0" width="100%">
+          <thead>
+            <tr>
+              
+              <th>Nome</th>
+              <th>Célula</th>
+              <th></th>
+                            
+            </tr>
+          </thead>
+          <tbody>
+            <% cont_lideres_em_treinamento = 0 %>
+            <% @em_treinamento.each do |pessoa| %>
+              <tr>
+                
+                <td><%= pessoa.nome %></td>
+                <td><%= pessoa.celula_que_e_lider_em_treinamento.nome %></td>
+                
+                <td>
+                  <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-default btn-small pull-right" data-toggle="modal" data-target="#myModallideres_em_treinamento<%= cont_lideres_em_treinamento %>">
+                      Leia +
+                    </button>
+                  <!-- Fim Button trigger modal -->
+
+                  <!-- Modal -->
+                    <div class="modal fade" id="myModallideres_em_treinamento<%= cont_lideres_em_treinamento %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel"><%= pessoa.nome %></h4>
+                          </div>
+                          <div class="modal-body">
+                            
+                            <dl class="dl-horizontal">
+
+                              <dt><strong>Nome:</strong></dt>
+                              <dd><%= pessoa.nome %></dd>
+                              <hr/>
+
+                              <dt><strong>Sexo:</strong></dt>
+                              <dd><%= pessoa.sexo %></dd>
+                              <dt><strong>Data Nascimento:</strong></dt>
+                              <dd><%= pessoa.data_nascimento.to_s_br %></dd>
+
+                              <h4>Contato</h4>
+                              <hr/>
+
+                              <dt><strong>E-mail:</strong></dt>
+                              <dd><%= pessoa.email %></dd>
+                              <dt><strong>Celular:</strong></dt>
+                              <dd><%= pessoa.celular %></dd>
+                              <dt><strong>Residencial:</strong></dt>
+                              <dd><%= pessoa.residencial %></dd>
+
+                              <h4>Endereço</h4>
+                              <hr/>
+
+                              <dt><strong>Logradouro:</strong></dt>
+                              <dd><%= pessoa.logradouro %></dd>
+                              <dt><strong>Numero:</strong></dt>
+                              <dd><%= pessoa.numero %></dd>
+                              <dt><strong>Bairro:</strong></dt>
+                              <dd><%= pessoa.bairro %></dd>
+                              <dt><strong>Cidade:</strong></dt>
+                              <dd><%= pessoa.cidade %></dd>
+                              <dt><strong>Estado:</strong></dt>
+                              <dd><%= pessoa.estado %></dd>
+                              <dt><strong>Cep:</strong></dt>
+                              <dd><%= pessoa.cep %></dd>
+                                
+                              <h4>Igreja</h4>
+                              <hr/>
+
+                              <dt><strong>Igreja:</strong></dt>
+                              <dd><%= detalhes2(pessoa.igreja, :nome) %></dd>
+                              
+                              <h4>Celula</h4>
+                              <hr/>
+
+                              <% if pessoa.celulas_que_e_cordenador != [] %>
+                                <dt><strong>Cordenador:</strong></dt>
+                                <% pessoa.celulas_que_e_cordenador.each do |c| %>
+                                  <dd><%= c.nome %></dd>
+                                <% end %>
+                                <br/>
+                              <% end %>
+
+
+                              <% if pessoa.celulas_que_e_supervisor != [] %>
+                                <dt><strong>Supervisor:</strong></dt>
+                                <% pessoa.celulas_que_e_supervisor.each do |c| %>
+                                  <dd><%= c.nome %></dd>
+                                <% end %>
+                                <br/>
+                              <% end %>
+
+                              <% if pessoa.celulas_que_e_lider != [] %>
+                                <dt><strong>Lider:</strong></dt>
+                                <% pessoa.celulas_que_e_lider.each do |c| %>
+                                  <% freq = EncontroSemanal.where(:celula_id=>c.id, :membro_ids.in=>([pessoa.id])).count %>
+                                  <% falt = EncontroSemanal.where(:celula_id=>c.id, :faltoso_ids.in=>([pessoa.id])).count %>
+                                  <% if freq > 0 %>
+                                    <% ult = EncontroSemanal.where(:celula_id=>c.id, :membro_ids.in=>([pessoa.id])).last %>
+                                    <% data = ult.data.to_s_br %>
+                                  <% else %>
+                                    <% data = "" %>
+                                  <% end %>
+                                  <dd><%= c.nome %> &nbsp; <strong>Frequencia: </strong> <%= freq %>/<%= freq+falt %> &nbsp; <strong> Ultima vez: </strong> <%= data %></dd>
+                                <% end %>
+                                <br/>
+                              <% end %>
+
+                              <% if pessoa.celula_que_e_lider_em_treinamento != nil %>
+                                <dt><strong>Lider em Treinamento:</strong></dt>
+                                <% freq = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_lider_em_treinamento.id, :membro_ids.in=>([pessoa.id])).count %>
+                                <% falt = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_lider_em_treinamento.id, :faltoso_ids.in=>([pessoa.id])).count %>
+                                <% if freq > 0 %>
+                                    <% ult = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_lider_em_treinamento.id, :membro_ids.in=>([pessoa.id])).last %>
+                                    <% data = ult.data.to_s_br %>
+                                  <% else %>
+                                    <% data = "" %>
+                                  <% end %>
+                                <dd><%= pessoa.celula_que_e_lider_em_treinamento.nome %> &nbsp; <strong>Frequencia: </strong> <%= freq %>/<%= freq+falt %> &nbsp; <strong> Ultima vez: </strong> <%= data %></dd>
+                                <br/>
+                              <% end %>
+
+                              <% if pessoa.celula_que_e_membro != nil %>
+                                <dt>Membro:</dt>
+
+                                <% freq = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_membro.id, :membro_ids.in=>([pessoa.id])).count %>
+                                <% falt = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_membro.id, :faltoso_ids.in=>([pessoa.id])).count %>
+
+                                <% if freq > 0 %>
+
+                                    <% ult = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_membro.id, :membro_ids.in=>([pessoa.id])).last %>
+                                    <% data = ult.data.to_s_br %>
+
+                                  <% else %>
+
+                                    <% data = "" %>
+
+                                  <% end %>
+
+                                <dd><%= pessoa.celula_que_e_membro.nome %> &nbsp; <strong>Frequencia: </strong> <%= freq %>/<%= freq+falt %> &nbsp; <strong>Ultima vez: </strong> <%= data %></dd>
+                                <br/>
+                              <% end %>
+
+                              <h4>Trilho <%= pessoa.porcentagem %>%</h4>
+                              <hr/>
+
+                              <% if pessoa.trilhos_da_pessoa.count > 0 %>
+                                <dt>Concluidos:</dt>
+                                <% pessoa.trilhos_da_pessoa.order_by([:ordem]).each do |t| %>
+                                  <dd><%= t.nome %></dd>
+                                <% end %>
+                              <% end %>
+                                
+                              <br/>
+                            </dl>
+                            
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <!-- Fim Modal -->
+                  <% cont_lideres_em_treinamento = cont_lideres_em_treinamento + 1 %>
+                
+                </td>
+
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+
+
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="heading4">
+      <h4 class="panel-title">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse4" aria-expanded="false" aria-controls="collapse4">
+          Lideres <span class="pull-right"><%= @lideres.count %></span>
+        </a>
+      </h4>
+    </div>
+    <div id="collapse4" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading4">
+      <div class="panel-body">
+        
+        <table id="pessoas" class="display table table-hover" cellspacing="0" width="100%">
+          <thead>
+            <tr>
+              
+              <th>Nome</th>
+              <th>Células</th>
+              <th></th>
+                            
+            </tr>
+          </thead>
+          <tbody>
+            <% cont_lideres_de_celula = 0 %>
+            <% @lideres.each do |pessoa| %>
+              <tr>
+                
+                <td><%= pessoa.nome %></td>
+                <td>
+                  <% pessoa.celulas_que_e_lider.each do |c| %>
+                    <%= c.nome %><br/>
+                  <% end %>
+                </td>
+
+                <td>
+                  <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-default btn-small pull-right" data-toggle="modal" data-target="#myModallideres_de_celula<%= cont_lideres_de_celula %>">
+                      Leia +
+                    </button>
+                  <!-- Fim Button trigger modal -->
+
+                  <!-- Modal -->
+                    <div class="modal fade" id="myModallideres_de_celula<%= cont_lideres_de_celula %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel"><%= pessoa.nome %></h4>
+                          </div>
+                          <div class="modal-body">
+                            
+                            <dl class="dl-horizontal">
+
+                              <dt><strong>Nome:</strong></dt>
+                              <dd><%= pessoa.nome %></dd>
+                              <hr/>
+
+                              <dt><strong>Sexo:</strong></dt>
+                              <dd><%= pessoa.sexo %></dd>
+                              <dt><strong>Data Nascimento:</strong></dt>
+                              <dd><%= pessoa.data_nascimento.to_s_br %></dd>
+
+                              <h4>Contato</h4>
+                              <hr/>
+
+                              <dt><strong>E-mail:</strong></dt>
+                              <dd><%= pessoa.email %></dd>
+                              <dt><strong>Celular:</strong></dt>
+                              <dd><%= pessoa.celular %></dd>
+                              <dt><strong>Residencial:</strong></dt>
+                              <dd><%= pessoa.residencial %></dd>
+
+                              <h4>Endereço</h4>
+                              <hr/>
+
+                              <dt><strong>Logradouro:</strong></dt>
+                              <dd><%= pessoa.logradouro %></dd>
+                              <dt><strong>Numero:</strong></dt>
+                              <dd><%= pessoa.numero %></dd>
+                              <dt><strong>Bairro:</strong></dt>
+                              <dd><%= pessoa.bairro %></dd>
+                              <dt><strong>Cidade:</strong></dt>
+                              <dd><%= pessoa.cidade %></dd>
+                              <dt><strong>Estado:</strong></dt>
+                              <dd><%= pessoa.estado %></dd>
+                              <dt><strong>Cep:</strong></dt>
+                              <dd><%= pessoa.cep %></dd>
+                                
+                              <h4>Igreja</h4>
+                              <hr/>
+
+                              <dt><strong>Igreja:</strong></dt>
+                              <dd><%= detalhes2(pessoa.igreja, :nome) %></dd>
+                              
+                              <h4>Celula</h4>
+                              <hr/>
+
+                              <% if pessoa.celulas_que_e_cordenador != [] %>
+                                <dt><strong>Cordenador:</strong></dt>
+                                <% pessoa.celulas_que_e_cordenador.each do |c| %>
+                                  <dd><%= c.nome %></dd>
+                                <% end %>
+                                <br/>
+                              <% end %>
+
+
+                              <% if pessoa.celulas_que_e_supervisor != [] %>
+                                <dt><strong>Supervisor:</strong></dt>
+                                <% pessoa.celulas_que_e_supervisor.each do |c| %>
+                                  <dd><%= c.nome %></dd>
+                                <% end %>
+                                <br/>
+                              <% end %>
+
+                              <% if pessoa.celulas_que_e_lider != [] %>
+                                <dt><strong>Lider:</strong></dt>
+                                <% pessoa.celulas_que_e_lider.each do |c| %>
+                                  <% freq = EncontroSemanal.where(:celula_id=>c.id, :membro_ids.in=>([pessoa.id])).count %>
+                                  <% falt = EncontroSemanal.where(:celula_id=>c.id, :faltoso_ids.in=>([pessoa.id])).count %>
+                                  <% if freq > 0 %>
+                                    <% ult = EncontroSemanal.where(:celula_id=>c.id, :membro_ids.in=>([pessoa.id])).last %>
+                                    <% data = ult.data.to_s_br %>
+                                  <% else %>
+                                    <% data = "" %>
+                                  <% end %>
+                                  <dd><%= c.nome %> &nbsp; <strong>Frequencia: </strong> <%= freq %>/<%= freq+falt %> &nbsp; <strong> Ultima vez: </strong> <%= data %></dd>
+                                <% end %>
+                                <br/>
+                              <% end %>
+
+                              <% if pessoa.celula_que_e_lider_em_treinamento != nil %>
+                                <dt><strong>Lider em Treinamento:</strong></dt>
+                                <% freq = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_lider_em_treinamento.id, :membro_ids.in=>([pessoa.id])).count %>
+                                <% falt = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_lider_em_treinamento.id, :faltoso_ids.in=>([pessoa.id])).count %>
+                                <% if freq > 0 %>
+                                    <% ult = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_lider_em_treinamento.id, :membro_ids.in=>([pessoa.id])).last %>
+                                    <% data = ult.data.to_s_br %>
+                                  <% else %>
+                                    <% data = "" %>
+                                  <% end %>
+                                <dd><%= pessoa.celula_que_e_lider_em_treinamento.nome %> &nbsp; <strong>Frequencia: </strong> <%= freq %>/<%= freq+falt %> &nbsp; <strong> Ultima vez: </strong> <%= data %></dd>
+                                <br/>
+                              <% end %>
+
+                              <% if pessoa.celula_que_e_membro != nil %>
+                                <dt>Membro:</dt>
+
+                                <% freq = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_membro.id, :membro_ids.in=>([pessoa.id])).count %>
+                                <% falt = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_membro.id, :faltoso_ids.in=>([pessoa.id])).count %>
+
+                                <% if freq > 0 %>
+
+                                    <% ult = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_membro.id, :membro_ids.in=>([pessoa.id])).last %>
+                                    <% data = ult.data.to_s_br %>
+
+                                  <% else %>
+
+                                    <% data = "" %>
+
+                                  <% end %>
+
+                                <dd><%= pessoa.celula_que_e_membro.nome %> &nbsp; <strong>Frequencia: </strong> <%= freq %>/<%= freq+falt %> &nbsp; <strong>Ultima vez: </strong> <%= data %></dd>
+                                <br/>
+                              <% end %>
+
+                              <h4>Trilho <%= pessoa.porcentagem %>%</h4>
+                              <hr/>
+
+                              <% if pessoa.trilhos_da_pessoa.count > 0 %>
+                                <dt>Concluidos:</dt>
+                                <% pessoa.trilhos_da_pessoa.order_by([:ordem]).each do |t| %>
+                                  <dd><%= t.nome %></dd>
+                                <% end %>
+                              <% end %>
+                                
+                              <br/>
+                            </dl>
+                            
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <!-- Fim Modal -->
+                  <% cont_lideres_de_celula = cont_lideres_de_celula + 1 %>
+                
+                </td>
+                              
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+
+
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="heading5">
+      <h5 class="panel-title">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse5" aria-expanded="false" aria-controls="collapse5">
+          Supervisores <span class="pull-right"><%= @supervisores.count %></span>
+        </a>
+      </h5>
+    </div>
+    <div id="collapse5" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading5">
+      <div class="panel-body">
+        
+        <table id="pessoas" class="display table table-hover" cellspacing="0" width="100%">
+          <thead>
+            <tr>
+              
+              <th>Nome</th>
+              <th>Células</th>
+              <th></th>
+                            
+            </tr>
+          </thead>
+          <tbody>
+            <% cont_supervisores_de_celula = 0 %>
+            <% @supervisores.each do |pessoa| %>
+              <tr>
+                
+                <td><%= pessoa.nome %></td>
+                <td>
+                  <% pessoa.celulas_que_e_supervisor.each do |c| %>
+                    <%= c.nome %><br/>
+                  <% end %>
+                </td>
+
+                <td>
+                  <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-default btn-small pull-right" data-toggle="modal" data-target="#myModalsupervisores_de_celula<%= cont_supervisores_de_celula %>">
+                      Leia +
+                    </button>
+                  <!-- Fim Button trigger modal -->
+
+                  <!-- Modal -->
+                    <div class="modal fade" id="myModalsupervisores_de_celula<%= cont_supervisores_de_celula %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel"><%= pessoa.nome %></h4>
+                          </div>
+                          <div class="modal-body">
+                            
+                            <dl class="dl-horizontal">
+
+                              <dt><strong>Nome:</strong></dt>
+                              <dd><%= pessoa.nome %></dd>
+                              <hr/>
+
+                              <dt><strong>Sexo:</strong></dt>
+                              <dd><%= pessoa.sexo %></dd>
+                              <dt><strong>Data Nascimento:</strong></dt>
+                              <dd><%= pessoa.data_nascimento.to_s_br %></dd>
+
+                              <h4>Contato</h4>
+                              <hr/>
+
+                              <dt><strong>E-mail:</strong></dt>
+                              <dd><%= pessoa.email %></dd>
+                              <dt><strong>Celular:</strong></dt>
+                              <dd><%= pessoa.celular %></dd>
+                              <dt><strong>Residencial:</strong></dt>
+                              <dd><%= pessoa.residencial %></dd>
+
+                              <h4>Endereço</h4>
+                              <hr/>
+
+                              <dt><strong>Logradouro:</strong></dt>
+                              <dd><%= pessoa.logradouro %></dd>
+                              <dt><strong>Numero:</strong></dt>
+                              <dd><%= pessoa.numero %></dd>
+                              <dt><strong>Bairro:</strong></dt>
+                              <dd><%= pessoa.bairro %></dd>
+                              <dt><strong>Cidade:</strong></dt>
+                              <dd><%= pessoa.cidade %></dd>
+                              <dt><strong>Estado:</strong></dt>
+                              <dd><%= pessoa.estado %></dd>
+                              <dt><strong>Cep:</strong></dt>
+                              <dd><%= pessoa.cep %></dd>
+                                
+                              <h4>Igreja</h4>
+                              <hr/>
+
+                              <dt><strong>Igreja:</strong></dt>
+                              <dd><%= detalhes2(pessoa.igreja, :nome) %></dd>
+                              
+                              <h4>Celula</h4>
+                              <hr/>
+
+                              <% if pessoa.celulas_que_e_cordenador != [] %>
+                                <dt><strong>Cordenador:</strong></dt>
+                                <% pessoa.celulas_que_e_cordenador.each do |c| %>
+                                  <dd><%= c.nome %></dd>
+                                <% end %>
+                                <br/>
+                              <% end %>
+
+
+                              <% if pessoa.celulas_que_e_supervisor != [] %>
+                                <dt><strong>Supervisor:</strong></dt>
+                                <% pessoa.celulas_que_e_supervisor.each do |c| %>
+                                  <dd><%= c.nome %></dd>
+                                <% end %>
+                                <br/>
+                              <% end %>
+
+                              <% if pessoa.celulas_que_e_lider != [] %>
+                                <dt><strong>Lider:</strong></dt>
+                                <% pessoa.celulas_que_e_lider.each do |c| %>
+                                  <% freq = EncontroSemanal.where(:celula_id=>c.id, :membro_ids.in=>([pessoa.id])).count %>
+                                  <% falt = EncontroSemanal.where(:celula_id=>c.id, :faltoso_ids.in=>([pessoa.id])).count %>
+                                  <% if freq > 0 %>
+                                    <% ult = EncontroSemanal.where(:celula_id=>c.id, :membro_ids.in=>([pessoa.id])).last %>
+                                    <% data = ult.data.to_s_br %>
+                                  <% else %>
+                                    <% data = "" %>
+                                  <% end %>
+                                  <dd><%= c.nome %> &nbsp; <strong>Frequencia: </strong> <%= freq %>/<%= freq+falt %> &nbsp; <strong> Ultima vez: </strong> <%= data %></dd>
+                                <% end %>
+                                <br/>
+                              <% end %>
+
+                              <% if pessoa.celula_que_e_lider_em_treinamento != nil %>
+                                <dt><strong>Lider em Treinamento:</strong></dt>
+                                <% freq = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_lider_em_treinamento.id, :membro_ids.in=>([pessoa.id])).count %>
+                                <% falt = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_lider_em_treinamento.id, :faltoso_ids.in=>([pessoa.id])).count %>
+                                <% if freq > 0 %>
+                                    <% ult = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_lider_em_treinamento.id, :membro_ids.in=>([pessoa.id])).last %>
+                                    <% data = ult.data.to_s_br %>
+                                  <% else %>
+                                    <% data = "" %>
+                                  <% end %>
+                                <dd><%= pessoa.celula_que_e_lider_em_treinamento.nome %> &nbsp; <strong>Frequencia: </strong> <%= freq %>/<%= freq+falt %> &nbsp; <strong> Ultima vez: </strong> <%= data %></dd>
+                                <br/>
+                              <% end %>
+
+                              <% if pessoa.celula_que_e_membro != nil %>
+                                <dt>Membro:</dt>
+
+                                <% freq = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_membro.id, :membro_ids.in=>([pessoa.id])).count %>
+                                <% falt = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_membro.id, :faltoso_ids.in=>([pessoa.id])).count %>
+
+                                <% if freq > 0 %>
+
+                                    <% ult = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_membro.id, :membro_ids.in=>([pessoa.id])).last %>
+                                    <% data = ult.data.to_s_br %>
+
+                                  <% else %>
+
+                                    <% data = "" %>
+
+                                  <% end %>
+
+                                <dd><%= pessoa.celula_que_e_membro.nome %> &nbsp; <strong>Frequencia: </strong> <%= freq %>/<%= freq+falt %> &nbsp; <strong>Ultima vez: </strong> <%= data %></dd>
+                                <br/>
+                              <% end %>
+
+                              <h4>Trilho <%= pessoa.porcentagem %>%</h4>
+                              <hr/>
+
+                              <% if pessoa.trilhos_da_pessoa.count > 0 %>
+                                <dt>Concluidos:</dt>
+                                <% pessoa.trilhos_da_pessoa.order_by([:ordem]).each do |t| %>
+                                  <dd><%= t.nome %></dd>
+                                <% end %>
+                              <% end %>
+                                
+                              <br/>
+                            </dl>
+                            
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <!-- Fim Modal -->
+                  <% cont_supervisores_de_celula = cont_supervisores_de_celula + 1 %>
+                
+                </td>
+                              
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingcoord">
+      <h5 class="panel-title">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapsecoord" aria-expanded="false" aria-controls="collapsecoord">
+          Coordenadores <span class="pull-right"><%= @cordenadores.count %></span>
+        </a>
+      </h5>
+    </div>
+    <div id="collapsecoord" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingcoord">
+      <div class="panel-body">
+        
+        <table id="pessoas" class="display table table-hover" cellspacing="0" width="100%">
+          <thead>
+            <tr>
+              
+              <th>Nome</th>
+              <th>Células</th>
+              <th></th>
+                            
+            </tr>
+          </thead>
+          <tbody>
+            <% cont_cordenadores_de_celula = 0 %>
+            <% @cordenadores.each do |pessoa| %>
+              <tr>
+                
+                <td><%= pessoa.nome %></td>
+                <td>
+                  <% pessoa.celulas_que_e_cordenador.each do |c| %>
+                    <%= c.nome %><br/>
+                  <% end %>
+                </td>
+
+                <td>
+                  <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-default btn-small pull-right" data-toggle="modal" data-target="#myModalcordenadores_de_celula<%= cont_cordenadores_de_celula %>">
+                      Leia +
+                    </button>
+                  <!-- Fim Button trigger modal -->
+
+                  <!-- Modal -->
+                    <div class="modal fade" id="myModalcordenadores_de_celula<%= cont_cordenadores_de_celula %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel"><%= pessoa.nome %></h4>
+                          </div>
+                          <div class="modal-body">
+                            
+                            <dl class="dl-horizontal">
+
+                              <dt><strong>Nome:</strong></dt>
+                              <dd><%= pessoa.nome %></dd>
+                              <hr/>
+
+                              <dt><strong>Sexo:</strong></dt>
+                              <dd><%= pessoa.sexo %></dd>
+                              <dt><strong>Data Nascimento:</strong></dt>
+                              <dd><%= pessoa.data_nascimento.to_s_br %></dd>
+
+                              <h4>Contato</h4>
+                              <hr/>
+
+                              <dt><strong>E-mail:</strong></dt>
+                              <dd><%= pessoa.email %></dd>
+                              <dt><strong>Celular:</strong></dt>
+                              <dd><%= pessoa.celular %></dd>
+                              <dt><strong>Residencial:</strong></dt>
+                              <dd><%= pessoa.residencial %></dd>
+
+                              <h4>Endereço</h4>
+                              <hr/>
+
+                              <dt><strong>Logradouro:</strong></dt>
+                              <dd><%= pessoa.logradouro %></dd>
+                              <dt><strong>Numero:</strong></dt>
+                              <dd><%= pessoa.numero %></dd>
+                              <dt><strong>Bairro:</strong></dt>
+                              <dd><%= pessoa.bairro %></dd>
+                              <dt><strong>Cidade:</strong></dt>
+                              <dd><%= pessoa.cidade %></dd>
+                              <dt><strong>Estado:</strong></dt>
+                              <dd><%= pessoa.estado %></dd>
+                              <dt><strong>Cep:</strong></dt>
+                              <dd><%= pessoa.cep %></dd>
+                                
+                              <h4>Igreja</h4>
+                              <hr/>
+
+                              <dt><strong>Igreja:</strong></dt>
+                              <dd><%= detalhes2(pessoa.igreja, :nome) %></dd>
+                              
+                              <h4>Celula</h4>
+                              <hr/>
+
+                              <% if pessoa.celulas_que_e_cordenador != [] %>
+                                <dt><strong>Cordenador:</strong></dt>
+                                <% pessoa.celulas_que_e_cordenador.each do |c| %>
+                                  <dd><%= c.nome %></dd>
+                                <% end %>
+                                <br/>
+                              <% end %>
+
+
+                              <% if pessoa.celulas_que_e_supervisor != [] %>
+                                <dt><strong>Supervisor:</strong></dt>
+                                <% pessoa.celulas_que_e_supervisor.each do |c| %>
+                                  <dd><%= c.nome %></dd>
+                                <% end %>
+                                <br/>
+                              <% end %>
+
+                              <% if pessoa.celulas_que_e_lider != [] %>
+                                <dt><strong>Lider:</strong></dt>
+                                <% pessoa.celulas_que_e_lider.each do |c| %>
+                                  <% freq = EncontroSemanal.where(:celula_id=>c.id, :membro_ids.in=>([pessoa.id])).count %>
+                                  <% falt = EncontroSemanal.where(:celula_id=>c.id, :faltoso_ids.in=>([pessoa.id])).count %>
+                                  <% if freq > 0 %>
+                                    <% ult = EncontroSemanal.where(:celula_id=>c.id, :membro_ids.in=>([pessoa.id])).last %>
+                                    <% data = ult.data.to_s_br %>
+                                  <% else %>
+                                    <% data = "" %>
+                                  <% end %>
+                                  <dd><%= c.nome %> &nbsp; <strong>Frequencia: </strong> <%= freq %>/<%= freq+falt %> &nbsp; <strong> Ultima vez: </strong> <%= data %></dd>
+                                <% end %>
+                                <br/>
+                              <% end %>
+
+                              <% if pessoa.celula_que_e_lider_em_treinamento != nil %>
+                                <dt><strong>Lider em Treinamento:</strong></dt>
+                                <% freq = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_lider_em_treinamento.id, :membro_ids.in=>([pessoa.id])).count %>
+                                <% falt = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_lider_em_treinamento.id, :faltoso_ids.in=>([pessoa.id])).count %>
+                                <% if freq > 0 %>
+                                    <% ult = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_lider_em_treinamento.id, :membro_ids.in=>([pessoa.id])).last %>
+                                    <% data = ult.data.to_s_br %>
+                                  <% else %>
+                                    <% data = "" %>
+                                  <% end %>
+                                <dd><%= pessoa.celula_que_e_lider_em_treinamento.nome %> &nbsp; <strong>Frequencia: </strong> <%= freq %>/<%= freq+falt %> &nbsp; <strong> Ultima vez: </strong> <%= data %></dd>
+                                <br/>
+                              <% end %>
+
+                              <% if pessoa.celula_que_e_membro != nil %>
+                                <dt>Membro:</dt>
+
+                                <% freq = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_membro.id, :membro_ids.in=>([pessoa.id])).count %>
+                                <% falt = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_membro.id, :faltoso_ids.in=>([pessoa.id])).count %>
+
+                                <% if freq > 0 %>
+
+                                    <% ult = EncontroSemanal.where(:celula_id=>pessoa.celula_que_e_membro.id, :membro_ids.in=>([pessoa.id])).last %>
+                                    <% data = ult.data.to_s_br %>
+
+                                  <% else %>
+
+                                    <% data = "" %>
+
+                                  <% end %>
+
+                                <dd><%= pessoa.celula_que_e_membro.nome %> &nbsp; <strong>Frequencia: </strong> <%= freq %>/<%= freq+falt %> &nbsp; <strong>Ultima vez: </strong> <%= data %></dd>
+                                <br/>
+                              <% end %>
+
+                              <h4>Trilho <%= pessoa.porcentagem %>%</h4>
+                              <hr/>
+
+                              <% if pessoa.trilhos_da_pessoa.count > 0 %>
+                                <dt>Concluidos:</dt>
+                                <% pessoa.trilhos_da_pessoa.order_by([:ordem]).each do |t| %>
+                                  <dd><%= t.nome %></dd>
+                                <% end %>
+                              <% end %>
+                                
+                              <br/>
+                            </dl>
+                            
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <!-- Fim Modal -->
+                  <% cont_cordenadores_de_celula = cont_cordenadores_de_celula + 1 %>
+                
+                </td>
+                              
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="heading6">
+      <h6 class="panel-title">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse6" aria-expanded="false" aria-controls="collapse6">
+          Células <span class="pull-right"><%= @celulas.count %></span>
+        </a>
+      </h6>
+    </div>
+    <div id="collapse6" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading6">
+      <div class="panel-body">
+        
+        <table id="pessoas" class="display table table-hover" cellspacing="0" width="100%">
+          <thead>
+            <tr>
+              
+              <th>Nome</th>
+              <th>Relatórios</th>
+              <th></th>
+
+            </tr>
+          </thead>
+          <tbody>
+            <% cont_celulas = 0 %>
+            <% @celulas.each do |c| %>
+              <tr>
+                
+                <td><%= c.nome %></td>
+                <td>
+                  <%= c.encontro_semanals.count %>
+                </td>
+
+                <td>
+                  <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-default btn-small pull-right" data-toggle="modal" data-target="#myModalcelulas<%= cont_celulas %>">
+                      Leia +
+                    </button>
+                  <!-- Fim Button trigger modal -->
+
+                  <!-- Modal -->
+                    <div class="modal fade" id="myModalcelulas<%= cont_celulas %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel"><%= c.nome %></h4>
+                          </div>
+                          <div class="modal-body">
+                            
+                            <dl class="dl-horizontal">
+                              <dt><strong>Nome:</strong></dt>
+                              <dd><%= c.nome %></dd>
+                              <dt><strong>Data Criação:</strong></dt>
+                              <dd><%= c.data_criacao.to_s_br %></dd>
+                              <dt><strong>Logradouro:</strong></dt>
+                              <dd><%= c.logradouro %></dd>
+                              <dt><strong>Numero:</strong></dt>
+                              <dd><%= c.numero %></dd>
+                              <dt><strong>Bairro:</strong></dt>
+                              <dd><%= c.bairro %></dd>
+                              <dt><strong>Cidade:</strong></dt>
+                              <dd><%= c.cidade %></dd>
+                              <dt><strong>Estado:</strong></dt>
+                              <dd><%= c.estado %></dd>
+                              <dt><strong>Cep:</strong></dt>
+                              <dd><%= c.cep %></dd>
+                              <dt><strong>Funcionamento:</strong></dt>
+                              <dd><%= c.dia %>, <%= c.hora %>:<%= c.minutos %></dd>
+                              <dt><strong>Igreja:</strong></dt>
+                              <dd><%= detalhes2(c.igreja, :nome) %></dd>
+
+                              <dt><strong>Cordenadores:</strong></dt>
+                              <dd>
+                                <% c.cordenadores_da_celula.each do |x| %>
+                                  <%= x.nome %><br/>
+                                <% end %>
+                              </dd>
+
+                              <dt><strong>Supervisores:</strong></dt>
+                              <dd>
+                                <% c.supervisores_da_celula.each do |x| %>
+                                  <%= x.nome %><br/>
+                                <% end %>
+                              </dd>
+
+                              <dt><strong>Lideres:</strong></dt>
+                              <dd>
+                                <% c.lideres_da_celula.each do |x| %>
+                                  <%= x.nome %><br/>
+                                <% end %>
+                              </dd>
+
+                              <dt><strong>Lideres em Treinamento:</strong></dt>
+                              <dd>
+                                <% c.lideres_em_treinamento_da_celula.each do |x| %>
+                                  <%= x.nome %><br/>
+                                <% end %>
+                              </dd>
+
+                              <dt><strong>Membros:</strong></dt>
+                              <dd>
+                                <% c.membros_da_celula.each do |x| %>
+                                  <%= x.nome %><br/>
+                                <% end %>
+                              </dd>
+
+                            </dl>
+                            
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <!-- Fim Modal -->
+                  <% cont_celulas = cont_celulas + 1 %>
+                
+                </td>
+
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="heading7">
+      <h7 class="panel-title">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse7" aria-expanded="false" aria-controls="collapse7">
+          Células Ativas <span class="pull-right"><%= @celulas_ativas.count %></span>
+        </a>
+      </h7>
+    </div>
+    <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
+      <div class="panel-body">
+        
+        <table id="pessoas" class="display table table-hover" cellspacing="0" width="100%">
+          <thead>
+            <tr>
+              
+              <th>Nome</th>
+              <th>Relatórios</th>
+              <th></th>
+
+            </tr>
+          </thead>
+          <tbody>
+            <% cont_celulas_ativas = 0 %>
+            <% @celulas_ativas.each do |c| %>
+              <tr>
+                
+                <td><%= c.nome %></td>
+                <td>
+                  <%= c.encontro_semanals.count %>
+                </td>
+
+                <td>
+                  <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-default btn-small pull-right" data-toggle="modal" data-target="#myModalcelulasativas<%= cont_celulas_ativas %>">
+                      Leia +
+                    </button>
+                  <!-- Fim Button trigger modal -->
+
+                  <!-- Modal -->
+                    <div class="modal fade" id="myModalcelulasativas<%= cont_celulas_ativas %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel"><%= c.nome %></h4>
+                          </div>
+                          <div class="modal-body">
+                            
+                            <dl class="dl-horizontal">
+                              <dt><strong>Nome:</strong></dt>
+                              <dd><%= c.nome %></dd>
+                              <dt><strong>Data Criação:</strong></dt>
+                              <dd><%= c.data_criacao.to_s_br %></dd>
+                              <dt><strong>Logradouro:</strong></dt>
+                              <dd><%= c.logradouro %></dd>
+                              <dt><strong>Numero:</strong></dt>
+                              <dd><%= c.numero %></dd>
+                              <dt><strong>Bairro:</strong></dt>
+                              <dd><%= c.bairro %></dd>
+                              <dt><strong>Cidade:</strong></dt>
+                              <dd><%= c.cidade %></dd>
+                              <dt><strong>Estado:</strong></dt>
+                              <dd><%= c.estado %></dd>
+                              <dt><strong>Cep:</strong></dt>
+                              <dd><%= c.cep %></dd>
+                              <dt><strong>Funcionamento:</strong></dt>
+                              <dd><%= c.dia %>, <%= c.hora %>:<%= c.minutos %></dd>
+                              <dt><strong>Igreja:</strong></dt>
+                              <dd><%= detalhes2(c.igreja, :nome) %></dd>
+
+                              <dt><strong>Cordenadores:</strong></dt>
+                              <dd>
+                                <% c.cordenadores_da_celula.each do |x| %>
+                                  <%= x.nome %><br/>
+                                <% end %>
+                              </dd>
+
+                              <dt><strong>Supervisores:</strong></dt>
+                              <dd>
+                                <% c.supervisores_da_celula.each do |x| %>
+                                  <%= x.nome %><br/>
+                                <% end %>
+                              </dd>
+
+                              <dt><strong>Lideres:</strong></dt>
+                              <dd>
+                                <% c.lideres_da_celula.each do |x| %>
+                                  <%= x.nome %><br/>
+                                <% end %>
+                              </dd>
+
+                              <dt><strong>Lideres em Treinamento:</strong></dt>
+                              <dd>
+                                <% c.lideres_em_treinamento_da_celula.each do |x| %>
+                                  <%= x.nome %><br/>
+                                <% end %>
+                              </dd>
+
+                              <dt><strong>Membros:</strong></dt>
+                              <dd>
+                                <% c.membros_da_celula.each do |x| %>
+                                  <%= x.nome %><br/>
+                                <% end %>
+                              </dd>
+
+                            </dl>
+                            
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <!-- Fim Modal -->
+                  <% cont_celulas_ativas = cont_celulas_ativas + 1 %>
+                </td>
+                              
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="heading8">
+      <h8 class="panel-title">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse8" aria-expanded="false" aria-controls="collapse8">
+          Células Inativas <span class="pull-right"><%= @celulas_inativas.count %></span>
+        </a>
+      </h8>
+    </div>
+    <div id="collapse8" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading8">
+      <div class="panel-body">
+          
+        <table id="pessoas" class="display table table-hover" cellspacing="0" width="100%">
+          <thead>
+            <tr>
+              
+              <th>Nome</th>
+              <th>Relatórios</th>
+              <th></th>
+
+            </tr>
+          </thead>
+          <tbody>
+            <% cont_celulas_inativas = 0 %>
+            <% @celulas_inativas.each do |c| %>
+              <tr>
+                
+                <td><%= c.nome %></td>
+                <td>
+                  <%= c.encontro_semanals.count %>
+                </td>
+                <td>
+                  <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-default btn-small pull-right" data-toggle="modal" data-target="#myModalcelulasinativas<%= cont_celulas_inativas %>">
+                      Leia +
+                    </button>
+                  <!-- Fim Button trigger modal -->
+
+                  <!-- Modal -->
+                    <div class="modal fade" id="myModalcelulasinativas<%= cont_celulas_inativas %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel"><%= c.nome %></h4>
+                          </div>
+                          <div class="modal-body">
+                            
+                            <dl class="dl-horizontal">
+                              <dt><strong>Nome:</strong></dt>
+                              <dd><%= c.nome %></dd>
+                              <dt><strong>Data Criação:</strong></dt>
+                              <dd><%= c.data_criacao.to_s_br %></dd>
+                              <dt><strong>Logradouro:</strong></dt>
+                              <dd><%= c.logradouro %></dd>
+                              <dt><strong>Numero:</strong></dt>
+                              <dd><%= c.numero %></dd>
+                              <dt><strong>Bairro:</strong></dt>
+                              <dd><%= c.bairro %></dd>
+                              <dt><strong>Cidade:</strong></dt>
+                              <dd><%= c.cidade %></dd>
+                              <dt><strong>Estado:</strong></dt>
+                              <dd><%= c.estado %></dd>
+                              <dt><strong>Cep:</strong></dt>
+                              <dd><%= c.cep %></dd>
+                              <dt><strong>Funcionamento:</strong></dt>
+                              <dd><%= c.dia %>, <%= c.hora %>:<%= c.minutos %></dd>
+                              <dt><strong>Igreja:</strong></dt>
+                              <dd><%= detalhes2(c.igreja, :nome) %></dd>
+
+                              <dt><strong>Cordenadores:</strong></dt>
+                              <dd>
+                                <% c.cordenadores_da_celula.each do |x| %>
+                                  <%= x.nome %><br/>
+                                <% end %>
+                              </dd>
+
+                              <dt><strong>Supervisores:</strong></dt>
+                              <dd>
+                                <% c.supervisores_da_celula.each do |x| %>
+                                  <%= x.nome %><br/>
+                                <% end %>
+                              </dd>
+
+                              <dt><strong>Lideres:</strong></dt>
+                              <dd>
+                                <% c.lideres_da_celula.each do |x| %>
+                                  <%= x.nome %><br/>
+                                <% end %>
+                              </dd>
+
+                              <dt><strong>Lideres em Treinamento:</strong></dt>
+                              <dd>
+                                <% c.lideres_em_treinamento_da_celula.each do |x| %>
+                                  <%= x.nome %><br/>
+                                <% end %>
+                              </dd>
+
+                              <dt><strong>Membros:</strong></dt>
+                              <dd>
+                                <% c.membros_da_celula.each do |x| %>
+                                  <%= x.nome %><br/>
+                                <% end %>
+                              </dd>
+
+                            </dl>
+
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <!-- Fim Modal -->
+                  <% cont_celulas_inativas = cont_celulas_inativas + 1 %>
+                </td>
+                              
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+  
+
+</div>

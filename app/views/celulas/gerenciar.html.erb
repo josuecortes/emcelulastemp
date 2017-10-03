@@ -1,0 +1,106 @@
+<%- model_class = Celula -%>
+<%= titulo_pagina("Gerenciando Celula: #{@celula.nome}","") %>
+<br/>
+<table id="membros" class="display table table-hover" cellspacing="0" width="100%">
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Posição na Celula</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    
+    <% @celula.cordenadores_da_celula.each do |x| %>
+      <tr>
+        <td><%= x.nome %></td>
+        <td>COORDENADOR</td>
+        <td>
+          <% if can? :remover_cordenador, @celula %>
+            <%= link_to link_icone('remover'), celula_remover_cordenador_url(@celula, :pessoa_id => x.id), :class=>'btn btn-danger' %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>  
+
+    <% @celula.supervisores_da_celula.each do |x| %>
+      <tr>
+        <td><%= x.nome %></td>
+        <td>SUPERVISOR</td>
+        <td>
+          <% if can? :remover_supervisor, @celula%>
+            <%= link_to link_icone('remover'), celula_remover_supervisor_url(@celula, :pessoa_id => x.id), :class=>'btn btn-danger' %>
+          <% end %>  
+        </td>
+      </tr>
+    <% end %>
+
+    <% @celula.lideres_em_treinamento_da_celula.each do |x| %>
+      <tr>
+        <td><%= x.nome %></td>
+        <td>LIDER EM TREINAMENTO</td>
+        <td>
+          <% if can? :remover_lider_em_treinamento, @celula %>
+            <%= link_to link_icone('remover'), celula_remover_lider_em_treinamento_url(@celula, :pessoa_id => x.id), :class=>'btn btn-danger' %>
+          <% end %>
+        </td>
+        
+      </tr>
+    <% end %>
+
+  	<% @celula.lideres_da_celula.each do |x| %>
+      <tr>
+        <td><%= x.nome %></td>
+        <td>LIDER</td>
+        <td>
+          <% if can? :remover_lider, @celula %>
+            <%= link_to link_icone('remover'), celula_remover_lider_url(@celula, :pessoa_id => x.id), :class=>'btn btn-danger' %> 
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+
+    <% @celula.membros_da_celula.each do |x| %>
+      <tr>
+        <td><%= x.nome %></td>
+        <td>MEMBRO</td>
+        <td>
+          <% if can? :remover_membro, @celula %>
+            <%= link_to link_icone('remover'), celula_remover_membro_url(@celula, :pessoa_id => x.id), :class=>'btn btn-danger' %>
+          <% end %>
+          <% if can? :salvar_lider_em_treinamento, x %>
+            <%= link_to 'Tornar Lider em Treinamento', celula_salvar_lider_em_treinamento_url(@celula, :pessoa_id => x.id), :class=>'btn btn-success' %>          
+          <% end %>    
+        </td>
+      </tr>
+    <% end %>
+
+  
+  </tbody>
+</table>
+
+<table class="table table-responsive">
+	<tbody>
+		<tr>
+			<td>
+
+				<% if can? :adicionar_membro, @celula %>
+          <%= link_to "Adicionar Membro", celula_adicionar_membro_path(@celula), :class=>'btn btn-success' %>&nbsp;
+        <% end %>
+        <% if can? :adicionar_lider, @celula %>
+          <%= link_to "Adicionar Lider", celula_adicionar_lider_path(@celula), :class=>'btn btn-success' %>&nbsp;
+        <% end %>
+        <% if can? :adicionar_supervisor, @celula %>
+          <%= link_to "Adicionar Supervisor", celula_adicionar_supervisor_path(@celula), :class=>'btn btn-success' %>&nbsp;
+        <% end %>
+        <% if can? :adicionar_cordenador, @celula %>
+          <%= link_to "Adicionar Coordenador", celula_adicionar_cordenador_path(@celula), :class=>'btn btn-success' %>
+        <% end %>
+      </td>
+    </tr>
+</tbody>
+</table>
+
+<br/>
+<%= link_to link_icone('voltar'), celulas_path, :class=>'btn btn-default' %>
+

@@ -1,0 +1,76 @@
+<%= titulo_pagina("Detalhes do Relatório","") %>
+
+<dl class="dl-horizontal">
+	<dt><strong>Celula:</strong></dt>
+  <dd><%= @celula.nome %></dd>
+  <dt><strong>Dia:</strong></dt>
+  <dd><%= @encontro_semanal.data.to_s_br %></dd>
+  <dt><strong>Status:</strong></dt>
+  <dd><%= @encontro_semanal.status %></dd>
+  <br/>
+  <% if @encontro_semanal.houve_celula == true %>
+    <dt><strong>Membros Presentes:</strong></dt>
+  	<% @encontro_semanal.membros.each do |m| %>
+  		<dd><%= m.nome %></dd>
+  	<% end %>
+    <dd><strong>Total: </strong><%= @encontro_semanal.membros.count %></dd>
+
+    <% if @encontro_semanal.status != "EM ABERTO" %>
+      <br/>
+      <dt><strong>Membros Ausentes:</strong></dt>
+      <% @encontro_semanal.faltosos.each do |m| %>
+        <dd><%= m.nome %></dd>
+      <% end %>
+      <dd><strong>Total: </strong><%= @encontro_semanal.faltosos.count %></dd>
+    <% end %>  
+
+    <br/>
+    <dt><strong>Numero de Visitantes:</strong></dt>
+    <dd><%= @encontro_semanal.numero_visitantes %></dd>
+    <dt><strong>Numero de Crianças:</strong></dt>
+    <dd><%= @encontro_semanal.numero_criancas %></dd>
+    <dt><strong>Numero de Decisões:</strong></dt>
+    <dd><%= @encontro_semanal.numero_decisoes %></dd>
+    <dt><strong>Numero de Reconciliações:</strong></dt>
+    <dd><%= @encontro_semanal.numero_reconciliacoes %></dd>
+    <br/>
+
+    <dt><strong>Palavra Ministrada:</strong></dt>
+    <dd><%= detalhes(@encontro_semanal.palavra) %></dd>
+    <dt><strong>Ministrante:</strong></dt>
+    <dd><%= detalhes(@encontro_semanal.ministrante) %></dd>
+    <br/>
+
+    <dt><strong>Total de Ofertas R$:</strong></dt>
+    <% @encontro_semanal.ofertas = @encontro_semanal.ofertas + ",00" if @encontro_semanal.ofertas.length <= 2 and  @encontro_semanal.ofertas.length > 0 %>
+    <dd><%= detalhes(@encontro_semanal.ofertas) %></dd>
+    <dt><strong>Total de Dizimos R$:</strong></dt>
+    <% @encontro_semanal.dizimos = @encontro_semanal.dizimos + ",00" if @encontro_semanal.dizimos.length <= 2 and @encontro_semanal.dizimos.length > 0 %>
+    <dd><%= detalhes(@encontro_semanal.dizimos) %></dd>
+    <br/>
+  <% else %>
+    <dt><strong>Não houve célula</strong></dt>
+    <dd></dd>
+  <% end %>
+    
+</dl>
+
+<%= link_to link_icone('voltar'),
+              celula_encontro_semanals_path, :class => 'btn'  %>
+<% if @encontro_semanal.status == "EM ABERTO" %>
+  <% if can? :update, @encontro_semanal %>
+    <%= link_to link_icone('editar'),
+              edit_celula_encontro_semanal_path(@celula,@encontro_semanal), :class => 'btn btn-default' %>
+  <% end %>
+  <% if can? :delete, @encontro_semanal %>
+    <%= link_to link_icone('excluir'), celula_encontro_semanal_path(@celula, @encontro_semanal), :class=>"btn btn-danger", method: :delete, data: { confirm: 'Você está certo disso?' } %> 
+  <% end %>
+  <% if can? :enviar, @encontro_semanal %>
+    <%= link_to link_icone('enviar'), celula_encontro_semanal_enviar_path(@celula, @encontro_semanal), :class=>"btn btn-success", data: { confirm: 'Você está certo disso?' } %>
+  <% end %>
+<% end %>
+<% if @encontro_semanal.status == "ENVIADO" %>
+  <% if can? :receber, @encontro_semanal %>
+    <%= link_to link_icone('receber'), celula_encontro_semanal_receber_path(@celula, @encontro_semanal), :class=>"btn btn-success", data: { confirm: 'Você está certo disso?' } %>
+  <% end %>
+<% end %>              

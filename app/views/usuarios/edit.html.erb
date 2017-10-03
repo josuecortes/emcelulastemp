@@ -1,0 +1,40 @@
+<%= titulo_pagina("Editar Usuário","") %>
+
+<%= simple_form_for @usuario, :url=>usuario_path(@usuario) do |f| %>
+
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :nome, :input_html => {:class=>"input-xxlarge", :required=>true} %>    
+    </div>
+    <div class="col-md-6">
+      <%= f.input :email, :input_html => {:class=>"input-xxlarge", :required=>true} %>  
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <% if can? :manage, Role %>
+    <%= f.input :role_ids, :label=>"Permissões", :collection=>Role.accessible_by(current_ability).order_by([:nome, :asc]).collect {|d| [d.nome, d.id]}, as: :check_boxes, :input_html => {:class=>"input-xlarge", :required=>true}  %>
+  <% end %>
+    </div>
+    <div class="col-md-6">
+      <% @ids = User.where(:pessoa_id.ne=>nil).collect {|p| p.pessoa_id if p.pessoa_id != @usuario.pessoa_id} %>
+
+  <%= f.input :pessoa_id, :label=>"Pessoa Relacionada", :collection=>Pessoa.accessible_by(current_ability).where(:id.nin=>(@ids)).order_by([:nome, :asc]).collect {|p| [p.nome, p.id]}, as: :select, :input_html => {:class=>"col-xs-2", :required=>true}  %> 
+    </div>
+  </div>
+
+  <% if current_user.igreja_id != nil %>
+    <%= f.input :igreja_id, :as => :hidden, :input_html => {value: current_user.igreja.id} %>
+  <% else %>
+    <%= f.input :igreja_id, :label=>"Igreja", :collection=>Igreja.order_by([:nome, :asc]).collect {|i| [i.nome, i.id]}, as: :select, :input_html => {:class=>"col-xs-2", :required=>true}  %>  
+  <% end %>
+    
+  <br/>
+
+  <div class="form-actions">
+    <%= f.button :submit, "Salvar", :class => 'btn-primary' %>
+    <%= link_to "Cancelar",
+                usuarios_path, :class => 'btn btn-default' %>
+  </div>
+<% end %>

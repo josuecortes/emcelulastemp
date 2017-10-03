@@ -1,0 +1,31 @@
+<%- model_class = Celula -%>
+<%= titulo_pagina("Relatorios da Celula: #{@celula.nome}","") %>
+<br/>
+<table id="relatorios" class="display table table-hover" cellspacing="0" width="100%">
+  <thead>
+    <tr>
+      <th>Data</th>
+      <th></th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    
+    <% @celula.cordenadores_da_celula.each do |x| %>
+      <tr>
+        <td><%= x.nome %></td>
+        <td></td>
+        <td>
+          <% if can? :remover_cordenador, @celula %>
+            <%= link_to link_icone('remover'), celula_remover_cordenador_url(@celula, :pessoa_id => x.id), :class=>'btn btn-danger' %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>  
+  
+  </tbody>
+</table>
+
+<br/>
+<%= link_to link_icone('voltar'), celulas_path, :class=>'btn btn-default' %>
+

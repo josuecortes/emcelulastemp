@@ -1,0 +1,66 @@
+<%- model_class = Celula -%>
+<%= titulo_pagina("Listagem de Celulas","") %>
+
+<table id="celulas" class="display table table-hover" cellspacing="0" width="100%">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name(:nome) %></th>
+      <th>Participantes</th>
+      <th>Relatórios</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @celulas.each do |celula| %>
+      <tr>
+        <td><%= celula.nome %></td>
+        <% 
+          cont = 0
+          cont = cont + celula.membros_da_celula.count 
+          cont = cont + celula.lideres_em_treinamento_da_celula.count
+          cont = cont + celula.lideres_da_celula.count
+        %> 
+        <td><%= cont %></td>
+        <%
+          tod = celula.encontro_semanals.count
+          rec = celula.encontro_semanals.where(:status=>"RECEBIDO").count
+        %>
+        <td><%= rec %>/<%= tod %></td>
+        <td>
+            <% if celula.ativo == true %>
+              
+              <%= link_to link_icone('detalhes'),
+                        celula_path(celula), :class => 'btn' %>
+              
+              <% if can? :update, celula %>
+                <%= link_to link_icone('editar'),
+                        edit_celula_path(celula), :class => 'btn btn-default' %>
+              <% end %>
+              
+              <% if can? :gerenciar, Celula %>
+                <%= link_to link_icone("gerenciar"), celula_gerenciar_path(celula), :class=>"btn btn-default" %> 
+              <% end %>
+
+              <% if can? :read, EncontroSemanal %>
+                <%= link_to link_icone("relatorios"), celula_encontro_semanals_path(celula), :class=>"btn btn-default" %> 
+              <% end %>
+
+              <% if can? :delete, Celula %>
+                <%= link_to link_icone('desativar'), celula_path(celula), :class=>"btn btn-danger", method: :delete, data: { confirm: 'Você está certo disso?' } %> 
+              <% end %>
+          <% else %>            
+            <% if can? :delete, Celula %>
+              <%= link_to link_icone('ativar'), celula_path(celula), :class=>"btn btn-success", method: :delete, data: { confirm: 'Você está certo disso?' } %> 
+            <% end %> 
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<% if can? :create, Celula %>
+  <%= link_to link_icone('nova'),
+            new_celula_path,
+            :class => 'btn btn-primary' %>
+<% end %>

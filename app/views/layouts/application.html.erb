@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= content_for?(:title) ? yield(:title) : "EMCELULAS" %></title>
+    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "EMCELULAS - Sistema de Gerenciamento de Igrejas em Celulas" %>">
+    <%= favicon_link_tag 'sicad.png' %>
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+    <%= csrf_meta_tags %>
+  </head>
+
+
+<body>
+
+    <% if !current_user %>
+        <%= render 'layouts/deslogado' %>
+    <% else %>
+        <%= render 'layouts/logado' %>
+    <% end %>
+
+    <%= javascript_include_tag 'application' %>
+
+</body>
+
+</html>

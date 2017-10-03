@@ -1,0 +1,31 @@
+<% if can? :adicionar_trilho, @pessoa %>
+  <% content_for :titulo do %>
+    Trilhos da Igreja <%= @pessoa.igreja.nome %>
+  <% end %>
+
+  <table id="igreja_trilhos" class="display table table-hover" cellspacing="0" width="100%">
+    <thead>
+      <tr>
+        <th>Ordem</th>
+        <th>Nome</th>
+        <th>Ações</th>
+        
+      </tr>
+    </thead>
+    <tbody>
+      
+      <% @trilhos.order_by([:ordem, :asc], [:nome, :asc]).each do |trilho| %>
+        <tr>
+          <td><%= trilho.ordem %></td>
+          <td><%= trilho.nome %></td>
+          <td>
+            <%= link_to link_icone("adicionar"), pessoa_salvar_trilho_url(@pessoa, :trilho_id=>trilho.id), :method=>:post, :class => "btn btn-success" %>
+          </td>
+        </tr>
+      <% end %>
+
+    </tbody>
+  </table>
+<% end %>
+<%= link_to link_icone('voltar'),
+              pessoa_trilhos_path(@pessoa), :class => 'btn'  %>

@@ -1,0 +1,109 @@
+<%= titulo_pagina("Aniversáriantes e Aniversários de Casamento","") %>
+
+<center><h4><strong> Aniversáriantes da Semana </strong></h4></center>
+
+<table id="atual" class="display table table-hover" cellspacing="0" width="100%">
+  <thead>
+    <tr>
+      <th>Dia</th>
+      <th>Semana</th>
+      <th>Nome</th>
+      <th>Celular</th>
+      <th>E-mail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @nesta_semana.each do |pessoa| %>
+      <tr>
+        <td><%= pessoa.data_nascimento.strftime('%d') %>/<%= pessoa.data_nascimento.strftime('%m') %></td>
+        <td><%= na_semana("#{pessoa.data_nascimento.day}/#{pessoa.data_nascimento.month}/#{DateTime.now.year}".to_date.strftime('%w')) %></td>
+        <td><%= pessoa.nome %></td>
+        <td><%= pessoa.celular %></td>
+        <td><%= pessoa.email %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<center><h4><strong> Aniversários de Casamento da Semana </strong></h4></center>
+
+<table id="atual" class="display table table-hover" cellspacing="0" width="100%">
+  <thead>
+    <tr>
+      <th>Dia</th>
+      <th>Semana</th>
+      <th>Nome</th>
+      <th>Celular</th>
+      <th>E-mail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @casamento_nesta_semana.each do |pessoa| %>
+      <tr>
+        <td><%= pessoa.data_casamento.strftime('%d') %>/<%= pessoa.data_casamento.strftime('%m') %></td>
+        <td><%= na_semana("#{pessoa.data_casamento.day}/#{pessoa.data_casamento.month}/#{DateTime.now.year}".to_date.strftime('%w')) %></td>
+        <td><%= pessoa.nome %></td>
+        <td><%= pessoa.celular %></td>
+        <td><%= pessoa.email %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<hr/>
+<br/>
+
+<%= form_tag("/relatorios/aniversariantes", method: "get") do %>
+  <strong>Selecione o Mês:</strong>
+  <%= select_tag(:mes, options_for_select(@meses), include_blank: true) %>
+  <%= submit_tag("Pesquisar") %>
+<% end %>
+  
+<center><h4><strong> Aniversáriantes do mês<%= no_mes(@mes) %> </strong></h4></center>
+
+<table id="atual" class="display table table-hover" cellspacing="0" width="100%">
+  <thead>
+    <tr>
+      <th>Dia</th>
+      <th>Nome</th>
+      <th>Celular</th>
+      <th>E-mail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @neste_mes.each do |pessoa| %>
+      <tr>
+        <td><%= pessoa.data_nascimento.strftime('%d') %>/<%= pessoa.data_nascimento.strftime('%m') %></td>
+        <td><%= pessoa.nome %></td>
+        <td><%= pessoa.celular %></td>
+        <td><%= pessoa.email %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<hr/>
+<br/>
+
+<center><h4><strong> Aniversários de casamento do mês<%= no_mes(@mes) %> </strong></h4></center>
+
+<table id="atual" class="display table table-hover" cellspacing="0" width="100%">
+  <thead>
+    <tr>
+      <th>Dia</th>
+      <th>Nome</th>
+      <th>Celular</th>
+      <th>E-mail</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @casamento_neste_mes.each do |pessoa| %>
+      <tr>
+        <td><%= pessoa.data_casamento.strftime('%d') %>/<%= pessoa.data_casamento.strftime('%m') %></td>
+        <td><%= pessoa.nome %></td>
+        <td><%= pessoa.celular %></td>
+        <td><%= pessoa.email %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
